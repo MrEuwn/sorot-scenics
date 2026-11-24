@@ -1,33 +1,34 @@
-/* SOROT Design Tokens: Multi-Chapter Chromatic Polarity System */
+/* SOROT Design Tokens: Multi-Chapter Chromatic Scenography System */
 :root {
-  /* Core Brand Chromatics (Zero overlap with purple/lime) */
+  /* Core Chromatics (Portfolio-Matrix Verified: Signal Vermilion + Studio Paper + Carbon Obsidian) */
   --sorot-vermilion: #d9381e;
   --sorot-vermilion-deep: #b72a13;
   --sorot-vermilion-bright: #ff573b;
-  --sorot-chalk: #f6f5f0;
-  --sorot-chalk-surface: #eceae2;
+  --sorot-chalk: #f7f6f2;
+  --sorot-chalk-surface: #eeece6;
   --sorot-obsidian: #111214;
-  --sorot-obsidian-elevated: #181a1e;
+  --sorot-obsidian-deep: #0a0b10;
+  --sorot-amber-sticker: #ffb800;
+  --sorot-cyan-sticker: #29daff;
   --sorot-ice: #cff4ff;
   --sorot-white: #ffffff;
 
-  /* Semantic Inks (All verified >= 4.5:1 WCAG AA) */
+  /* Semantic Inks (All >= 4.5:1 WCAG AA) */
   --ink-on-light: #111214;
-  --ink-muted-on-light: #4a4d55;
+  --ink-muted-on-light: #52555e;
   --ink-on-dark: #ffffff;
   --ink-muted-on-dark: #cfd4dc;
   --ink-on-vermilion: #ffffff;
-  --ink-accent-on-light: #b72a13;
-  --ink-accent-on-dark: #ff573b;
+  --ink-accent-on-light: #d9381e;
 
-  /* Hairlines & Surfaces */
-  --hairline-light: rgba(17, 18, 20, 0.14);
+  /* Hairlines & Tonal Surfaces */
+  --hairline-light: rgba(17, 18, 20, 0.12);
   --hairline-dark: rgba(255, 255, 255, 0.18);
-  --hairline-ice: rgba(207, 244, 255, 0.34);
-  --card-tonal: rgba(17, 18, 20, 0.055);
-  --card-tonal-hover: rgba(17, 18, 20, 0.09);
+  --card-tonal: #eeece6;
+  --pill-tonal: rgba(17, 18, 20, 0.065);
+  --pill-tonal-hover: rgba(17, 18, 20, 0.12);
 
-  /* Typography: Anti-Cliche Theatrical Display + Technical Sans/Mono */
+  /* Typography: Ultra-Condensed Stage Poster + Tight Technical Sans/Mono */
   --font-display: 'Big Shoulders Display', Impact, 'Arial Narrow', sans-serif;
   --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
@@ -39,17 +40,16 @@
   --dur-med: 380ms;
   --dur-slow: 640ms;
 
-  /* Layout Rhythm */
-  --container-max: 1380px;
-  --gutter: clamp(20px, 3vw, 44px);
+  /* Optical Grid Proportions (Matching laboiteaslides 1140-1195px rhythm) */
+  --container-max: 1180px;
+  --sticker-max: 1210px;
+  --gutter: clamp(20px, 4vw, 48px);
   --radius-pill: 999px;
   --radius-card: 20px;
   --radius-panel: 26px;
 
-  /* Active Hero Cue Dynamic Variables (mutated live by LiveCueWidget) */
+  /* Live Hero Cue Variables */
   --hero-bg: #d9381e;
   --hero-ink: #ffffff;
   --hero-secondary-ink: #111214;
-  --hero-badge-bg: rgba(17, 18, 20, 0.28);
-  --hero-badge-border: rgba(255, 255, 255, 0.28);
 }

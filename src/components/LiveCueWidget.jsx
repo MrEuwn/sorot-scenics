@@ -1,51 +1,57 @@
 import { useEffect, useState } from 'react';
-import { Plus, Radio, Sliders, X } from 'lucide-react';
+import { Plus, Sliders, X } from 'lucide-react';
 import { LIGHTING_CUES } from '../data/sorotData';
 import './LiveCueWidget.css';
 
-function formatTimecode(baseStr, frameOffset) {
-  const parts = baseStr.split(':').map(Number);
-  if (parts.length !== 4 || parts.some(Number.isNaN)) return baseStr;
-  let [hh, mm, ss, ff] = parts;
-  const totalFrames = ff + frameOffset;
-  ff = totalFrames % 30;
-  const addSec = Math.floor(totalFrames / 30);
-  const totalSec = ss + addSec;
-  ss = totalSec % 60;
-  const addMin = Math.floor(totalSec / 60);
-  mm = (mm + addMin) % 60;
-  const pad = (n) => String(n).padStart(2, '0');
-  return `${pad(hh)}:${pad(mm)}:${pad(ss)}:${pad(ff)}`;
-}
-
 export default function LiveCueWidget({ activeCueId, onSelectCue, onOpenBrief }) {
-  const [frameTick, setFrameTick] = useState(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [scrolledPastHero, setScrolledPastHero] = useState(false);
-  const [manualExpanded, setManualExpanded] = useState(false);
-
+  const [inFooter, setInFooter] = useState(false);
+  const [onDarkStage, setOnDarkStage] = useState(true);
   const activeCue = LIGHTING_CUES.find((c) => c.id === activeCueId) || LIGHTING_CUES[0];
-  const isCompact = scrolledPastHero && !manualExpanded;
+
+  const cycleNextCue = () => {
+    const idx = LIGHTING_CUES.findIndex((c) => c.id === activeCue.id);
+    const next = LIGHTING_CUES[(idx + 1) % LIGHTING_CUES.length];
+    onSelectCue(next.id);
+  };
 
   useEffect(() => {
     const onScroll = () => {
-      const past = window.scrollY > window.innerHeight * 0.62;
-      setScrolledPastHero(past);
-      if (!past) setManualExpanded(false);
+      const vh = window.innerHeight || 900;
+      const footerEl = document.getElementById('footer');
+      const heroEl = document.getElementById('hero-stage');
+      const qualEl = document.getElementById('standards');
+
+      if (footerEl) {
+        const fr = footerEl.getBoundingClientRect();
+        setInFooter(fr.top < vh * 0.78);
+      }
+
+      let dark = false;
+      if (heroEl) {
+        const hr = heroEl.getBoundingClientRect();
+        const prog = -hr.top / Math.max(1, hr.height - vh);
+        if (hr.bottom > vh * 0.4 && prog < 0.36 && activeCue.polarity !== 'light') {
+          dark = true;
+        }
+      }
+      if (qualEl) {
+        const qr = qualEl.getBoundingClientRect();
+        if (qr.top < vh * 0.5 && qr.bottom > vh * 0.5) {
+          dark = true;
+        }
+      }
+      setOnDarkStage(dark);
     };
+
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
-  useEffect(() => {
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduced) return undefined;
-    const timer = window.setInterval(() => {
-      setFrameTick((prev) => (prev + 3) % 900);
-    }, 100);
-    return () => window.clearInterval(timer);
-  }, []);
+    window.addEventListener('resize', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, [activeCue.polarity]);
 
   useEffect(() => {
     if (!drawerOpen) return undefined;
@@ -56,111 +62,87 @@ export default function LiveCueWidget({ activeCueId, onSelectCue, onOpenBrief })
     return () => window.removeEventListener('keydown', onKey);
   }, [drawerOpen]);
 
-  const liveTimecode = formatTimecode(activeCue.timecodeStart, frameTick);
-
   return (
     <>
+      {/* Sleek Bottom-Left Showreel Story Card + "+" Pill (Auto-hides cleanly in Footer like laboiteaslides!) */}
       <aside
-        className={`live-cue-dock ${isCompact ? 'live-cue-dock--compact' : ''}`}
-        aria-label="Live Lighting Cue Console"
+        className={`live-cue-dock ${inFooter ? 'live-cue-dock--hidden' : ''}`}
+        aria-label="Live Stage Showreel and Cue Switcher"
         data-active-cue={activeCue.id}
       >
-        {isCompact ? (
+        <div className="story-reel-card">
+          <div className="story-reel-card__top">
+            <span className="story-reel-card__author">
+              <span className="story-reel-card__dot" aria-hidden="true" />
+              <span>{activeCue.director}</span>
+            </span>
+            <svg viewBox="0 0 16 16" width="11" height="11" aria-hidden="true" data-art="bowtie">
+              <polygon points="2,2 8,8 2,12" fill="#29DAFF" />
+              <polygon points="14,4 8,8 14,14" fill="#FF573B" />
+            </svg>
+          </div>
+
           <button
             type="button"
-            className="live-cue-compact-pill"
-            onClick={() => setManualExpanded(true)}
-            aria-label={`Expand Live Lighting Cue Console, active cue ${activeCue.code} ${activeCue.shortName}`}
+            className="story-reel-card__frame"
+            onClick={cycleNextCue}
+            aria-label={`Switch live lighting cue, currently ${activeCue.shortName}`}
           >
-            <span className="live-cue-widget__live-pill mono-meta">
-              <Radio size={11} aria-hidden="true" />
-              <span>DMX</span>
-            </span>
-            <span className="mono-meta live-cue-compact-pill__label">
-              {activeCue.code} {activeCue.shortName}
-            </span>
-            <span
-              className="cue-switch__led"
-              style={{ '--led-color': activeCue.accentHex, background: activeCue.accentHex }}
-              aria-hidden="true"
-            />
+            <img src={activeCue.reelImage} alt="" aria-hidden="true" />
+            <div className="story-reel-card__beam" aria-hidden="true" />
+            <span className="story-reel-card__caption">{activeCue.reelCaption}</span>
           </button>
-        ) : (
-        <div className="live-cue-widget">
-          <div className="live-cue-widget__header">
-            <span className="live-cue-widget__live-pill mono-meta">
-              <Radio size={11} aria-hidden="true" />
-              <span>DMX LIVE</span>
-            </span>
-            <span className="live-cue-widget__tc mono-meta" aria-live="off">
-              TC {liveTimecode}
-            </span>
-            {scrolledPastHero && (
-              <button
-                type="button"
-                className="live-cue-widget__min-btn"
-                onClick={() => setManualExpanded(false)}
-                aria-label="Minimize cue console"
-              >
-                <X size={13} aria-hidden="true" />
-              </button>
-            )}
-          </div>
 
-          <div
-            className={`live-cue-widget__stage live-cue-widget__stage--${activeCue.id}`}
-            aria-hidden="true"
-          >
-            <div className="live-cue-widget__beam live-cue-widget__beam--a" />
-            <div className="live-cue-widget__beam live-cue-widget__beam--b" />
-            <div className="live-cue-widget__beam live-cue-widget__beam--c" />
-            <div className="live-cue-widget__prism-wire" />
-            <div className="live-cue-widget__stage-caption">
-              <span className="mono-meta">{activeCue.lumens}</span>
-              <span className="mono-meta">{activeCue.rigLoad}</span>
-            </div>
-          </div>
-
-          <div
-            className="live-cue-widget__switches"
-            role="group"
-            aria-label="Select active stage lighting cue"
-          >
-            {LIGHTING_CUES.map((cue) => {
-              const isSelected = cue.id === activeCue.id;
-              return (
+          <div className="story-reel-card__bottom">
+            <span className="story-reel-card__brand">sorot®</span>
+            <div className="story-reel-card__cues" role="group" aria-label="Lighting cues">
+              {LIGHTING_CUES.map((cue) => (
                 <button
                   key={cue.id}
                   type="button"
-                  className={`cue-switch ${isSelected ? 'cue-switch--active' : ''}`}
-                  aria-pressed={isSelected}
+                  className={`story-reel-card__cue-dot ${
+                    cue.id === activeCue.id ? 'is-active' : ''
+                  }`}
                   onClick={() => onSelectCue(cue.id)}
+                  aria-label={`Activate cue ${cue.code} ${cue.shortName}`}
+                  aria-pressed={cue.id === activeCue.id}
                   data-cue-btn={cue.id}
-                >
-                  <span className="cue-switch__code mono-meta">{cue.code}</span>
-                  <span className="cue-switch__name">{cue.name}</span>
-                  <span
-                    className="cue-switch__led"
-                    style={{ '--led-color': cue.accentHex }}
-                    aria-hidden="true"
-                  />
-                </button>
-              );
-            })}
+                />
+              ))}
+            </div>
           </div>
         </div>
-        )}
 
         <button
           type="button"
           className="live-cue-dock__expand"
-          aria-label="Open live cue rig specification drawer"
+          aria-label="Open live lighting cue console"
           aria-expanded={drawerOpen}
           onClick={() => setDrawerOpen((prev) => !prev)}
         >
-          {drawerOpen ? <X size={18} aria-hidden="true" /> : <Plus size={18} aria-hidden="true" />}
+          {drawerOpen ? <X size={16} aria-hidden="true" /> : <Plus size={16} aria-hidden="true" />}
         </button>
       </aside>
+
+      {/* Fixed Bottom-Right Rotating Scroll Ring (Visible on Hero & Quality Monolith like laboiteaslides!) */}
+      <div
+        className={`fixed-scroll-ring ${onDarkStage && !inFooter ? 'is-visible' : ''}`}
+        aria-hidden="true"
+      >
+        <svg viewBox="0 0 116 116" width="82" height="82" className="fixed-scroll-ring__svg">
+          <defs>
+            <path
+              id="sorot-fixed-ring"
+              d="M 58, 58 m -40, 0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0"
+            />
+          </defs>
+          <text className="fixed-scroll-ring__text">
+            <textPath href="#sorot-fixed-ring" startOffset="0%">
+              Scroll · Scroll · Scroll · Scroll ·
+            </textPath>
+          </text>
+        </svg>
+      </div>
 
       {drawerOpen && (
         <div
@@ -174,7 +156,7 @@ export default function LiveCueWidget({ activeCueId, onSelectCue, onOpenBrief })
             <div className="cue-drawer__top">
               <span className="eyebrow">
                 <Sliders size={13} aria-hidden="true" />
-                CUE SHEET // {activeCue.code}
+                LIVE CUE RIG // {activeCue.code}
               </span>
               <button
                 type="button"
@@ -206,14 +188,10 @@ export default function LiveCueWidget({ activeCueId, onSelectCue, onOpenBrief })
                 <span className="mono-meta">OVERHEAD RIG LOAD</span>
                 <strong>{activeCue.rigLoad}</strong>
               </div>
-              <div className="cue-drawer__spec-row">
-                <span className="mono-meta">ACTIVE TIMECODE</span>
-                <strong className="mono-meta">TC {liveTimecode}</strong>
-              </div>
             </div>
 
             <div className="cue-drawer__modes">
-              <span className="mono-meta">SWITCH ACTIVE RIG CUE</span>
+              <span className="mono-meta">SWITCH ACTIVE HERO LIGHTING RIG</span>
               <div className="cue-drawer__mode-pills">
                 {LIGHTING_CUES.map((cue) => (
                   <button

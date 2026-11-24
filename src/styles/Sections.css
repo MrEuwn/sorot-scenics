@@ -1,126 +1,128 @@
 /* ============================================================
-   HERO STAGE & RISING CHALK DOME TRANSITION
+   ACT 1: PINNED 340VH HERO STAGE + REFRACTIVE POSTER + WHITE ARCH
    ============================================================ */
-.hero-stage {
+.hero-track {
   position: relative;
-  min-height: 100vh;
+  height: 330vh;
+  min-height: 2550px;
 }
 
-.hero-stage__viewport {
+.hero-sticky-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Rising Curved Studio Paper Arch Dome (upper-mid-1440.png twin!) */
+.hero-arch-dome {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  top: -14vh;
+  height: 132vh;
+  border-radius: 50% 50% 0 0 / 22% 22% 0 0;
+  background: var(--sorot-chalk);
+  z-index: 2;
+  will-change: transform;
+  transform: translate3d(0, 108%, 0);
+  pointer-events: none;
+}
+
+/* Two-Block Staggered Condensed Poster Headline */
+.hero-poster-wrap {
   position: relative;
-  min-height: min(100vh, 980px);
+  z-index: 3;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 120px 0 110px;
+  justify-content: space-between;
+  gap: clamp(32px, 5vh, 64px);
+  padding-top: 44px;
+  will-change: transform, opacity;
+  opacity: 0;
+  pointer-events: none;
 }
 
-.hero-stage__content {
-  position: relative;
-  z-index: 6;
+.hero-poster-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-poster-block--left {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.hero-poster-block--right {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.hero-poster-line {
+  font-size: clamp(72px, 11.4vw, 158px);
+  line-height: 0.76;
+  color: var(--hero-ink);
+  transition: color 240ms ease;
+}
+
+.hero-poster-line--punch {
+  color: var(--hero-secondary-ink);
+}
+
+.hero-poster-wrap[data-on-paper='true'] .hero-poster-line {
+  color: var(--sorot-obsidian);
+}
+
+.hero-poster-wrap[data-on-paper='true'] .hero-poster-line--punch {
+  color: var(--sorot-vermilion);
+}
+
+/* Centered H1 Editorial Thesis Statement */
+.hero-thesis-overlay {
+  position: absolute;
+  z-index: 15;
+  max-width: 820px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: clamp(18px, 2.4vw, 28px);
+  gap: 28px;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
 }
 
-.hero-stage__meta-bar {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-}
-
-.hero-stage__spec-pill {
-  padding: 6px 14px;
-  border-radius: var(--radius-pill);
-  background: var(--hero-badge-bg);
-  border: 1px solid var(--hero-badge-border);
-  color: var(--hero-ink);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.hero-stage--daylight .hero-stage__spec-pill {
-  background: rgba(17, 18, 20, 0.08);
-  border-color: rgba(17, 18, 20, 0.18);
-  color: var(--sorot-obsidian);
-}
-
-.hero-stage--chiaroscuro .hero-stage__spec-pill {
-  background: rgba(207, 244, 255, 0.1);
-  border-color: rgba(207, 244, 255, 0.34);
-  color: var(--sorot-ice);
-}
-
-.hero-stage__headline {
-  font-size: clamp(78px, 12.2vw, 178px);
-  line-height: 0.8;
-  letter-spacing: -0.02em;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: var(--hero-ink);
-  text-shadow: 0 14px 40px rgba(0, 0, 0, 0.12);
-}
-
-.hero-stage--daylight .hero-stage__headline {
-  text-shadow: none;
-}
-
-.hero-stage__line {
-  display: block;
-}
-
-.hero-stage__line--accent {
-  color: var(--hero-secondary-ink);
-}
-
-.hero-stage__subbar {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 22px;
-  max-width: 600px;
-}
-
-.hero-stage__lead {
+.hero-thesis__h1 {
   margin: 0;
-  font-size: clamp(16px, 1.35vw, 18px);
-  font-weight: 500;
-  line-height: 1.5;
-  color: var(--hero-ink);
-  opacity: 0.94;
-  padding: 8px 16px;
-  border-radius: 14px;
-  background: rgba(17, 18, 20, 0.18);
-  backdrop-filter: blur(10px);
-}
-
-.hero-stage--daylight .hero-stage__lead {
-  background: rgba(246, 245, 240, 0.72);
+  font-family: var(--font-sans);
+  font-size: clamp(24px, 2.55vw, 36px);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
   color: var(--sorot-obsidian);
 }
 
-.hero-stage--chiaroscuro .hero-stage__lead {
-  background: rgba(17, 18, 20, 0.62);
-  color: var(--sorot-white);
-}
-
-/* Bottom-Right Rotating Circular SCROLL Stamp */
+/* Bottom-Right Rotating Circular Scroll Ring */
 .scroll-stamp {
   position: absolute;
-  right: clamp(20px, 3vw, 38px);
-  bottom: clamp(24px, 3vw, 38px);
-  z-index: 12;
-  width: 92px;
-  height: 92px;
+  right: clamp(18px, 2.2vw, 30px);
+  bottom: clamp(18px, 2.2vw, 28px);
+  z-index: 15;
+  width: 86px;
+  height: 86px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--hero-ink);
-  transition: transform var(--dur-fast) var(--ease-snap);
+  color: rgba(255, 255, 255, 0.85);
+  transition: transform var(--dur-fast) var(--ease-snap), opacity 220ms ease;
+}
+
+.hero-track--daylight .scroll-stamp {
+  color: var(--sorot-obsidian);
 }
 
 .scroll-stamp:hover {
@@ -133,17 +135,10 @@
 
 .scroll-stamp__text {
   fill: currentColor;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 9.5px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-}
-
-.scroll-stamp__center {
-  position: absolute;
-  font-family: var(--font-mono);
-  font-size: 18px;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: 0.14em;
 }
 
 @keyframes stampSpin {
@@ -155,82 +150,156 @@
   }
 }
 
-/* Rising Curved Chalk Dome Transition */
-.hero-dome-transition {
+/* ============================================================
+   ACT 2 & ACT 5: PINNED CHROMATIC "STICKER" STAGES
+   (Exact s02-tagline.jpg & s06-skills.jpg inset frame!)
+   ============================================================ */
+.sticker-track {
   position: relative;
-  z-index: 10;
-  background: var(--sorot-chalk);
-  color: var(--ink-on-light);
-  padding: clamp(86px, 9vw, 132px) 0 clamp(72px, 7vw, 112px);
-  margin-top: 64px;
+  padding: clamp(24px, 3vw, 48px) clamp(12px, 3vw, 48px);
 }
 
-.hero-dome-transition__arc {
-  position: absolute;
-  top: -72px;
-  left: -6%;
-  right: -6%;
-  height: 144px;
-  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-  background: var(--sorot-chalk);
-  pointer-events: none;
+.sticker-track--amber {
+  min-height: 155vh;
 }
 
-.hero-thesis {
-  position: relative;
-  z-index: 2;
-  max-width: 980px;
-  text-align: center;
+.sticker-track--cyan {
+  min-height: 175vh;
+}
+
+.sticker-sticky {
+  position: sticky;
+  top: 76px;
+  display: flex;
+  justify-content: center;
+}
+
+.sticker-card {
+  width: 100%;
+  max-width: var(--sticker-max);
+  min-height: min(76vh, 720px);
+  padding: clamp(54px, 7vw, 108px) clamp(28px, 8vw, 148px);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 24px;
+  justify-content: center;
 }
 
-.hero-thesis__eyebrow {
-  color: var(--ink-accent-on-light);
+.sticker-card--amber {
+  background-color: var(--sorot-amber-sticker);
+  color: var(--sorot-obsidian);
 }
 
-.hero-thesis__statement {
+.sticker-card--cyan {
+  background-color: var(--sorot-cyan-sticker);
+  color: var(--sorot-obsidian);
+  padding-block: clamp(56px, 6.5vw, 96px);
+}
+
+.sticker-card__inner {
+  max-width: 820px;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(44px, 6vw, 84px);
+}
+
+.tagline-scrub-heading {
   margin: 0;
   font-family: var(--font-sans);
-  font-size: clamp(24px, 2.75vw, 36px);
+  font-size: clamp(24px, 2.55vw, 36px);
   font-weight: 600;
-  line-height: 1.24;
-  letter-spacing: -0.025em;
-  color: var(--ink-on-light);
+  line-height: 1.08;
+  letter-spacing: -0.038em;
+  color: var(--sorot-obsidian);
 }
 
-.hero-thesis__highlight {
-  color: var(--ink-accent-on-light);
+.tagline-scrub-word {
+  opacity: 0.28;
+  transition: opacity 120ms linear;
 }
 
-.hero-thesis__specs {
+.tagline-subcopy {
+  margin: 0;
+  max-width: 680px;
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.48;
+  color: var(--sorot-obsidian);
+}
+
+/* Act 5: Staggered Left/Right/Left Skills List inside Cyan Sticker */
+.skills-list {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
+  max-width: 880px;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: clamp(48px, 6vw, 82px);
+}
+
+.skills-item {
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  will-change: transform, opacity;
+}
+
+.skills-item--left {
+  align-self: flex-start;
+  text-align: left;
+  align-items: flex-start;
+}
+
+.skills-item--right {
+  align-self: flex-end;
+  text-align: right;
+  align-items: flex-end;
+}
+
+.skills-item__title {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(22px, 2.45vw, 35px);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.036em;
+  color: var(--sorot-obsidian);
+}
+
+.skills-item__chips {
+  display: flex;
+  gap: 8px;
+}
+
+.skills-chip {
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.28);
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  gap: 12px 26px;
-  padding-top: 12px;
-  border-top: 1px solid var(--hairline-light);
-  color: var(--ink-muted-on-light);
+  font-weight: 600;
+  color: var(--sorot-obsidian);
 }
 
 /* ============================================================
-   SELECTED STAGE WORKS (2x3 PANORAMIC GRID)
+   ACT 3: PANORAMIC 2x4 SQUARE-ISH STAGE WORKS GRID
+   (Exact s03-works.jpg & s04-works-cards.jpg proportion!)
    ============================================================ */
 .works-section {
-  padding: clamp(56px, 6vw, 88px) 0 clamp(76px, 8vw, 116px);
+  padding: clamp(72px, 8vw, 124px) 0 clamp(68px, 7vw, 108px);
 }
 
-.section-head {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  margin-bottom: clamp(32px, 4vw, 52px);
+.works-container {
+  max-width: 1180px;
 }
 
-.section-head__eyebrow {
-  color: var(--ink-accent-on-light);
+.works-header {
+  padding-left: clamp(0px, 10vw, 156px);
+  margin-bottom: clamp(36px, 4.5vw, 56px);
 }
 
 .text-vermilion {
@@ -238,25 +307,31 @@
 }
 
 .works-section__title {
-  font-size: clamp(54px, 7vw, 96px);
+  font-size: clamp(58px, 7.2vw, 102px);
+  line-height: 0.8;
   display: flex;
-  flex-wrap: wrap;
-  gap: 0 20px;
+  flex-direction: column;
   color: var(--ink-on-light);
 }
 
 .works-grid {
+  --col-parallax: 0px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: 10px;
 }
 
 .work-card {
   position: relative;
-  border-radius: var(--radius-card);
+  border-radius: 20px;
   overflow: hidden;
   background: var(--sorot-obsidian);
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 1.05 / 1;
+  will-change: transform;
+}
+
+.work-card--even {
+  transform: translate3d(0, var(--col-parallax), 0);
 }
 
 .work-card__trigger {
@@ -291,61 +366,45 @@
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(17, 18, 20, 0.28) 0%,
-    rgba(17, 18, 20, 0.08) 42%,
-    rgba(17, 18, 20, 0.88) 100%
+    rgba(10, 11, 14, 0) 52%,
+    rgba(10, 11, 14, 0.78) 100%
   );
 }
 
-.work-card__top-tags {
+.work-card__footer {
   position: absolute;
-  top: 16px;
-  left: 16px;
-  right: 16px;
+  left: 24px;
+  right: 24px;
+  bottom: 22px;
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 6px;
-}
-
-.work-card__pill {
-  padding: 5px 10px;
-  border-radius: var(--radius-pill);
-  background: rgba(17, 18, 20, 0.72);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  color: var(--sorot-white);
-  backdrop-filter: blur(8px);
-}
-
-.work-card__body {
-  position: absolute;
-  left: 22px;
-  right: 22px;
-  bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  color: var(--sorot-white);
-}
-
-.work-card__cat {
-  color: var(--sorot-ice);
+  gap: 12px;
+  z-index: 2;
 }
 
 .work-card__title {
-  font-size: clamp(32px, 3.2vw, 46px);
+  font-size: clamp(28px, 2.6vw, 38px);
+  line-height: 0.88;
   color: var(--sorot-white);
 }
 
-.work-card__client {
-  font-size: 13.5px;
-  color: #dfe4ec;
+.work-card__tag {
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(17, 18, 20, 0.34);
+  backdrop-filter: blur(10px);
+  color: var(--sorot-white);
+  font-size: 12px;
+  font-weight: 500;
 }
 
 /* Work Dossier Modal */
 .work-dossier-modal {
   position: fixed;
   inset: 0;
-  z-index: 130;
+  z-index: 145;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -355,14 +414,14 @@
 .work-dossier-modal__backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(10, 11, 13, 0.78);
+  background: rgba(10, 11, 13, 0.76);
   backdrop-filter: blur(12px);
 }
 
 .work-dossier-modal__card {
   position: relative;
   z-index: 2;
-  width: min(760px, 100%);
+  width: min(720px, 100%);
   border-radius: 26px;
   overflow: hidden;
   background: var(--sorot-obsidian);
@@ -409,7 +468,7 @@
 }
 
 .work-dossier-modal__title {
-  font-size: clamp(36px, 4.5vw, 56px);
+  font-size: clamp(36px, 4.2vw, 54px);
 }
 
 .work-dossier-modal__summary {
@@ -433,48 +492,15 @@
 }
 
 /* ============================================================
-   PAUSEABLE KINETIC METRICS MARQUEE & PROOF METRICS
+   ACT 4: GIANT 144PX VERMILION MARQUEE + EDITORIAL METHOD
+   (Exact s05-method.jpg composition!)
    ============================================================ */
 .method-section {
-  padding: clamp(24px, 4vw, 48px) 0 clamp(76px, 8vw, 118px);
+  padding: clamp(36px, 4vw, 64px) 0 clamp(76px, 8vw, 116px);
 }
 
 .marquee-band {
-  border-top: 1px solid var(--hairline-light);
-  border-bottom: 1px solid var(--hairline-light);
-  padding: 24px 0 32px;
-}
-
-.marquee-band__controls {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 18px;
-}
-
-.marquee-pause-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  height: 36px;
-  padding: 0 14px;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--hairline-light);
-  background: var(--sorot-white);
-  color: var(--ink-on-light);
-  font-size: 12.5px;
-  font-weight: 600;
-  transition:
-    background-color var(--dur-fast) ease,
-    color var(--dur-fast) ease,
-    border-color var(--dur-fast) ease;
-}
-
-.marquee-pause-btn:hover {
-  background: var(--sorot-obsidian);
-  color: var(--sorot-white);
-  border-color: var(--sorot-obsidian);
+  overflow: hidden;
 }
 
 .marquee-track-wrap {
@@ -485,7 +511,7 @@
 .marquee-track {
   display: flex;
   width: max-content;
-  animation: sorotMarquee 32s linear infinite;
+  animation: sorotMarquee 30s linear infinite;
 }
 
 .marquee-track-wrap:hover .marquee-track,
@@ -501,17 +527,21 @@
 }
 
 .marquee-item {
-  font-size: clamp(72px, 9.8vw, 140px);
+  font-size: clamp(82px, 10.4vw, 148px);
+  line-height: 0.82;
   color: var(--sorot-vermilion);
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
 }
 
-.marquee-sep {
-  margin-inline: clamp(18px, 2.5vw, 38px);
-  color: var(--ink-on-light);
-  opacity: 0.3;
+.marquee-dot {
+  width: clamp(22px, 3vw, 44px);
+  height: clamp(22px, 3vw, 44px);
+  border-radius: 50%;
+  background: var(--sorot-vermilion);
+  margin-inline: clamp(22px, 2.8vw, 44px);
+  flex-shrink: 0;
 }
 
 @keyframes sorotMarquee {
@@ -523,340 +553,689 @@
   }
 }
 
-.proof-block {
-  padding-top: clamp(48px, 5.5vw, 76px);
+.marquee-controls-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
 }
 
-.proof-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+.marquee-pause-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--hairline-light);
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--ink-muted-on-light);
+  font-size: 11.5px;
+  font-weight: 600;
 }
 
-.proof-card {
-  border-radius: var(--radius-card);
-  background: var(--card-tonal);
-  padding: clamp(24px, 2.6vw, 34px);
+.method-editorial {
+  max-width: 820px;
+  padding-top: clamp(44px, 5vw, 72px);
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.method-editorial__lead {
+  margin: 0;
+  font-size: clamp(24px, 2.55vw, 36px);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.038em;
+  color: var(--sorot-obsidian);
+}
+
+.method-editorial__body {
+  margin: 0;
+  font-size: clamp(17px, 1.48vw, 21px);
+  font-weight: 500;
+  line-height: 1.34;
+  letter-spacing: -0.02em;
+  color: var(--sorot-obsidian);
+}
+
+.method-editorial__checks {
+  list-style: none;
+  margin: 0;
+  padding: 24px 0 0;
+  border-top: 1px solid var(--hairline-light);
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.proof-card__tag {
-  color: var(--ink-accent-on-light);
-}
-
-.proof-card__value {
-  font-size: clamp(68px, 7.2vw, 106px);
-  color: var(--ink-on-light);
-  margin: 4px 0;
-}
-
-.proof-card__label {
-  margin: 0;
-  font-family: var(--font-sans);
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  color: var(--ink-on-light);
-}
-
-.proof-card__detail {
-  margin: 0;
-  font-size: 14.5px;
-  color: var(--ink-muted-on-light);
-}
-
-.proof-cta-bar {
-  margin-top: 32px;
+.method-editorial__checks li {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--sorot-obsidian);
 }
 
-.proof-cta-bar__note {
-  margin: 0;
-  max-width: 560px;
-  font-size: 15.5px;
-  font-weight: 500;
-  color: var(--ink-muted-on-light);
+.method-check-badge {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(17, 18, 20, 0.1);
+  color: var(--sorot-obsidian);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 /* ============================================================
-   MONUMENTAL DISCIPLINES HOVER INDEX
+   ACT 6: MONUMENTAL 88PX KINETIC DISCIPLINES ROUTER
    ============================================================ */
-.disciplines-section {
-  padding: clamp(32px, 4vw, 56px) 0 clamp(92px, 9vw, 136px);
+.expertises-section {
+  padding: clamp(72px, 8vw, 118px) 0 clamp(56px, 6vw, 88px);
 }
 
-.disciplines-layout {
+.expertises-eyebrow {
+  margin: 0 0 22px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sorot-obsidian);
+}
+
+.expertises-stage {
   display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.85fr);
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.75fr);
   gap: clamp(28px, 4vw, 56px);
-  align-items: start;
+  align-items: center;
 }
 
-.disciplines-index {
-  margin-top: 22px;
+.expertises-router {
+  display: flex;
+  flex-direction: column;
   border-top: 1px solid var(--hairline-light);
 }
 
-.discipline-row {
-  border-bottom: 1px solid var(--hairline-light);
-}
-
-.discipline-row__btn {
+.expertise-link {
   width: 100%;
-  display: grid;
-  grid-template-columns: 36px 1fr auto;
-  align-items: center;
-  gap: 14px;
-  padding: 20px 8px;
+  padding: 14px 4px;
   border: 0;
+  border-bottom: 1px solid var(--hairline-light);
   background: transparent;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
   text-align: left;
-  transition: padding-left var(--dur-med) var(--ease-expo);
+  transition: transform var(--dur-med) var(--ease-expo), color var(--dur-fast) ease;
 }
 
-.discipline-row--active .discipline-row__btn,
-.discipline-row__btn:hover {
-  padding-left: 16px;
-}
-
-.discipline-row__index {
-  color: var(--ink-muted-on-light);
-}
-
-.discipline-row--active .discipline-row__index {
-  color: var(--ink-accent-on-light);
-}
-
-.discipline-row__title {
-  font-size: clamp(44px, 5.6vw, 82px);
-  color: var(--ink-on-light);
-  transition: color var(--dur-fast) ease;
-}
-
-.discipline-row--active .discipline-row__title,
-.discipline-row__btn:hover .discipline-row__title {
+.expertise-link:hover,
+.expertise-link.is-active {
+  transform: translateX(12px);
   color: var(--sorot-vermilion);
 }
 
-.discipline-row__arrow {
+.expertise-link__label {
+  font-size: clamp(44px, 5.8vw, 84px);
+  line-height: 0.86;
+}
+
+.expertise-link__spec {
   color: var(--ink-muted-on-light);
-  transition: transform var(--dur-fast) ease, color var(--dur-fast) ease;
 }
 
-.discipline-row--active .discipline-row__arrow {
-  color: var(--sorot-vermilion);
-  transform: translate(3px, -3px);
-}
-
-.discipline-row__mobile-preview {
-  display: none;
-}
-
-.disciplines-preview-col {
-  position: sticky;
-  top: 104px;
-}
-
-.discipline-plate {
-  border-radius: 24px;
+.expertise-preview-card {
+  border-radius: 22px;
   overflow: hidden;
-  background: var(--sorot-obsidian);
-  color: var(--sorot-white);
-  box-shadow: 0 26px 56px rgba(17, 18, 20, 0.14);
+  background: var(--sorot-white);
+  box-shadow: 0 24px 60px rgba(17, 18, 20, 0.09);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.discipline-plate__image {
+.expertise-preview-card__img {
   position: relative;
-  aspect-ratio: 16 / 11;
+  border-radius: 14px;
   overflow: hidden;
+  aspect-ratio: 16 / 11;
 }
 
-.discipline-plate__image img {
+.expertise-preview-card__img img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.discipline-plate__badge {
+.expertise-preview-card__pill {
   position: absolute;
-  left: 14px;
-  bottom: 14px;
-  padding: 5px 11px;
+  left: 12px;
+  bottom: 12px;
+  padding: 5px 10px;
   border-radius: var(--radius-pill);
   background: rgba(17, 18, 20, 0.78);
-  border: 1px solid rgba(207, 244, 255, 0.34);
-  color: var(--sorot-ice);
+  color: var(--sorot-white);
   backdrop-filter: blur(8px);
 }
 
-.discipline-plate__body {
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.discipline-plate__code {
-  color: var(--sorot-vermilion-bright);
-}
-
-.discipline-plate__title {
-  font-size: 40px;
-  color: var(--sorot-white);
-}
-
-.discipline-plate__summary {
+.expertise-preview-card__desc {
   margin: 0;
-  color: var(--ink-muted-on-dark);
-  font-size: 14.5px;
-}
-
-.discipline-plate__cta {
-  margin-top: 6px;
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 10px 18px;
-  border-radius: var(--radius-pill);
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--sorot-white);
-  font-weight: 600;
-  font-size: 13.5px;
-  transition: background-color var(--dur-fast) ease, color var(--dur-fast) ease;
-}
-
-.discipline-plate__cta:hover {
-  background: var(--sorot-white);
-  color: var(--sorot-obsidian);
+  padding: 0 6px 6px;
+  font-size: 14px;
+  color: var(--ink-muted-on-light);
 }
 
 /* ============================================================
-   CARBON OBSIDIAN STANDARDS GLASS WALL (#111214)
+   ACT 7: PINNED 280VH 3D ORBITAL STAGE-SCREEN SPHERE PORTAL
+   (Exact vr-1440.png & mid-1440.png twin!)
    ============================================================ */
-.standards-section {
+.vr-portal-track {
   position: relative;
+  height: 270vh;
+  min-height: 2100px;
+}
+
+.vr-portal-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
   overflow: hidden;
-  padding: clamp(104px, 11vw, 156px) 0 clamp(108px, 11vw, 160px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.standards-section__ambient {
+.vr-globe-scene {
   position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 22% 24%, rgba(217, 56, 30, 0.16) 0%, rgba(17, 18, 20, 0) 48%),
-    radial-gradient(circle at 82% 76%, rgba(207, 244, 255, 0.1) 0%, rgba(17, 18, 20, 0) 46%);
+  left: 34%;
+  top: 56%;
+  width: 360px;
+  height: 360px;
+  margin-left: -180px;
+  margin-top: -180px;
+  perspective: 950px;
+  z-index: 2;
   pointer-events: none;
+  opacity: 0.96;
 }
 
-.standards-section__inner {
+.vr-globe {
   position: relative;
-  z-index: 2;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transform: scale(0.92) rotateX(-10deg) rotateY(24deg);
+}
+
+.vr-globe__core {
+  position: absolute;
+  inset: 34px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 34%, #2a3140 0%, #101218 68%, #07080b 100%);
+  box-shadow:
+    0 24px 64px rgba(17, 18, 20, 0.24),
+    inset 0 0 36px rgba(217, 56, 30, 0.35);
+}
+
+.vr-globe__tile {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 82px;
+  height: 54px;
+  margin-left: -41px;
+  margin-top: -27px;
+  border-radius: 7px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.36);
+  background: var(--sorot-obsidian);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  backface-visibility: visible;
+}
+
+.vr-globe__tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vr-globe__cue {
+  position: absolute;
+  left: 5px;
+  bottom: 4px;
+  font-family: var(--font-mono);
+  font-size: 7.5px;
+  font-weight: 600;
+  color: var(--sorot-white);
+  background: rgba(10, 11, 14, 0.72);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.vr-portal-content {
+  position: relative;
+  z-index: 5;
   display: flex;
   flex-direction: column;
   align-items: center;
+  will-change: transform;
 }
 
-.standards-section__head {
+.vr-portal__title {
+  font-size: clamp(58px, 7.2vw, 102px);
+  line-height: 0.8;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
+  color: var(--sorot-obsidian);
 }
 
-.standards-section__eyebrow {
-  color: var(--sorot-ice);
+.vr-portal__offset-col {
+  align-self: flex-end;
+  max-width: 540px;
+  margin-top: 6px;
+  padding: 18px 24px;
+  border-radius: 22px;
+  background: rgba(247, 246, 242, 0.76);
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
 }
 
-.standards-section__display {
-  font-size: clamp(72px, 13.5vw, 204px);
+.vr-portal__lead {
+  margin: 0;
+  font-size: clamp(22px, 2.4vw, 34px);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  color: #3a3d45;
+}
+
+/* ============================================================
+   ACT 8: STUDIO CULTURE SPOTLIGHT (s08-spotlight.jpg twin!)
+   ============================================================ */
+.spotlight-section {
+  padding: clamp(72px, 8vw, 124px) 0;
+}
+
+.spotlight-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(36px, 5vw, 76px);
+  align-items: center;
+}
+
+.spotlight-copy-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 24px;
+}
+
+.spotlight-bowtie svg {
+  animation: spotlightFloat 5s ease-in-out infinite alternate;
+}
+
+@keyframes spotlightFloat {
+  from {
+    transform: rotate(-8deg) scale(0.96);
+  }
+  to {
+    transform: rotate(12deg) scale(1.06);
+  }
+}
+
+.spotlight__title {
+  font-size: clamp(58px, 7vw, 98px);
   line-height: 0.8;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.standards-section__line-white {
-  color: var(--sorot-white);
+.spotlight__body {
+  margin: 0;
+  max-width: 400px;
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.48;
+  color: var(--sorot-obsidian);
 }
 
-.standards-section__line-vermilion {
-  color: var(--sorot-vermilion-bright);
-}
-
-/* 3 Refined Frosted Glass Certification Cards Sweeping Over the Display */
-.standards-cards {
-  width: 100%;
-  margin-top: clamp(-36px, -3.5vw, -16px);
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+.spotlight-prism-plate {
   position: relative;
-  z-index: 4;
+  border-radius: 24px;
+  overflow: hidden;
+  aspect-ratio: 4 / 3.4;
+  background: var(--sorot-obsidian);
+  box-shadow: 0 28px 64px rgba(17, 18, 20, 0.12);
 }
 
-.standard-glass-card {
-  border-radius: 22px;
-  padding: clamp(24px, 2.6vw, 32px);
-  background: rgba(24, 26, 30, 0.8);
-  border: 1px solid rgba(207, 244, 255, 0.26);
-  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.42);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.spotlight-prism-plate img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.standard-glass-card--2 {
-  transform: translateY(22px);
+.spotlight-prism-plate__glass-wedge {
+  position: absolute;
+  right: -8%;
+  bottom: -10%;
+  width: 62%;
+  height: 74%;
+  clip-path: polygon(100% 0, 0 100%, 100% 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.34), rgba(207, 244, 255, 0.08));
+  backdrop-filter: blur(14px);
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
 }
 
-.standard-glass-card__top {
+.spotlight-prism-plate__caption {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  top: 18px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.standard-glass-card__code {
-  color: var(--sorot-vermilion-bright);
-}
-
-.standard-glass-card__metric {
-  padding: 4px 10px;
+  padding: 6px 12px;
   border-radius: var(--radius-pill);
-  background: rgba(207, 244, 255, 0.12);
-  border: 1px solid rgba(207, 244, 255, 0.28);
-  color: var(--sorot-ice);
-}
-
-.standard-glass-card__title {
-  font-size: clamp(32px, 3vw, 44px);
+  background: rgba(17, 18, 20, 0.68);
   color: var(--sorot-white);
-}
-
-.standard-glass-card__desc {
-  margin: 0;
-  color: #dfe4ec;
-  font-size: 14.5px;
-  line-height: 1.55;
+  backdrop-filter: blur(8px);
 }
 
 /* ============================================================
-   CLIENT REVIEWS HORIZONTAL CAROUSEL
+   ACT 9: LATEST FIELD RESOURCES 3-COLUMN TALL CARDS
+   (Exact s09-resources.jpg twin!)
+   ============================================================ */
+.resources-section {
+  padding: clamp(56px, 6.5vw, 96px) 0 clamp(96px, 10vw, 148px);
+}
+
+.resources-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 22px;
+  margin-bottom: clamp(36px, 4.5vw, 56px);
+}
+
+.resources-header__title {
+  font-size: clamp(58px, 7vw, 98px);
+  line-height: 0.8;
+  display: flex;
+  flex-direction: column;
+}
+
+.resources-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.resource-card {
+  position: relative;
+  min-height: 460px;
+  border-radius: 22px;
+  padding: 28px 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform var(--dur-med) var(--ease-expo);
+}
+
+.resource-card:hover {
+  transform: translateY(-5px);
+}
+
+.resource-card--dark {
+  background: var(--sorot-obsidian);
+  color: var(--sorot-white);
+}
+
+.resource-card--book {
+  background: var(--card-tonal);
+  color: var(--sorot-obsidian);
+  padding-bottom: 0;
+}
+
+.resource-card__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.resource-card__pill {
+  padding: 7px 18px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.resource-card--book .resource-card__pill {
+  border-color: rgba(17, 18, 20, 0.14);
+}
+
+.resource-card__date {
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.resource-card__title {
+  font-size: clamp(40px, 3.8vw, 54px);
+  line-height: 0.84;
+  max-width: 12ch;
+}
+
+/* Card 3: Tilted 3D Signal Vermilion Embossed Handbook Cover (Exact s09-resources.jpg!) */
+.resource-book-cover {
+  position: relative;
+  width: 88%;
+  flex: 1;
+  min-height: 295px;
+  margin-top: auto;
+  transform: rotate(3.2deg) translateY(14px);
+  transition: transform var(--dur-med) var(--ease-expo);
+}
+
+.resource-card--book:hover .resource-book-cover {
+  transform: rotate(1.5deg) translateY(4px);
+}
+
+.resource-book-cover__pages {
+  position: absolute;
+  inset: 8px -10px -10px 14px;
+  border-radius: 12px 12px 0 0;
+  background: var(--sorot-white);
+  box-shadow: 0 12px 28px rgba(17, 18, 20, 0.12);
+}
+
+.resource-book-cover__front {
+  position: relative;
+  height: 100%;
+  border-radius: 12px 12px 0 0;
+  background: linear-gradient(145deg, #f24a2e 0%, #d9381e 58%, #9e210d 100%);
+  color: var(--sorot-white);
+  padding: 24px 20px;
+  text-align: left;
+  overflow: hidden;
+  box-shadow: -8px 10px 28px rgba(17, 18, 20, 0.18);
+}
+
+.resource-book-cover__title {
+  position: relative;
+  z-index: 2;
+  font-size: clamp(32px, 3vw, 42px);
+  line-height: 0.86;
+}
+
+.resource-book-cover__emboss {
+  position: absolute;
+  right: -18px;
+  bottom: -24px;
+  width: 170px;
+  height: 170px;
+  clip-path: polygon(100% 0, 0 100%, 100% 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.36), rgba(138, 26, 8, 0.45));
+}
+
+/* ============================================================
+   ACT 10: PINNED 340VH DEEP CARBON WALL + 3 FLYING GLASS CARDS
+   (Exact quality-1440.png & s10-quality-cards.jpg twin!)
+   ============================================================ */
+.quality-wall-track {
+  position: relative;
+  height: 330vh;
+  min-height: 2500px;
+}
+
+.quality-wall-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quality-wall__glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 24% 28%, rgba(217, 56, 30, 0.22) 0%, rgba(10, 11, 16, 0) 52%),
+    radial-gradient(circle at 78% 72%, rgba(41, 218, 255, 0.12) 0%, rgba(10, 11, 16, 0) 48%);
+  pointer-events: none;
+}
+
+.quality-wall__display {
+  position: relative;
+  z-index: 2;
+  font-size: clamp(78px, 14.8vw, 216px);
+  line-height: 0.76;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-inline: 16px;
+}
+
+.quality-wall__line-white {
+  color: var(--sorot-white);
+}
+
+.quality-wall__line-accent {
+  color: var(--sorot-vermilion-bright);
+}
+
+.quality-flying-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.quality-glass-card {
+  position: absolute;
+  width: min(448px, 88vw);
+  min-height: 468px;
+  border-radius: 26px;
+  padding: 36px 32px;
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(42px);
+  -webkit-backdrop-filter: blur(42px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  color: var(--sorot-white);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.cert-emblem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.cert-emblem__big,
+.cert-emblem__ring,
+.cert-emblem__shield {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 46px;
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+  padding: 10px 20px;
+  border-radius: 16px;
+  border: 1.5px solid rgba(255, 255, 255, 0.42);
+  background: rgba(17, 18, 20, 0.34);
+}
+
+.cert-emblem__stars {
+  color: var(--sorot-amber-sticker);
+  font-size: 14px;
+  letter-spacing: 0.14em;
+}
+
+.cert-emblem__sub {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--sorot-ice);
+}
+
+.quality-glass-card__title {
+  font-size: clamp(34px, 3.2vw, 46px);
+  line-height: 0.86;
+  max-width: 14ch;
+}
+
+.quality-glass-card__badge {
+  padding: 7px 18px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(17, 18, 20, 0.32);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ============================================================
+   ACT 11A: DIRECTOR REVIEWS HORIZONTAL TONAL GLASS CAROUSEL
+   (Exact low-1440.png twin!)
    ============================================================ */
 .reviews-section {
-  padding: clamp(92px, 9vw, 132px) 0 clamp(64px, 6.5vw, 96px);
+  padding: clamp(92px, 9.5vw, 140px) 0 clamp(56px, 6vw, 88px);
 }
 
 .reviews-head {
@@ -864,118 +1243,115 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 20px;
-  flex-wrap: wrap;
-  margin-bottom: 34px;
+  margin-bottom: 40px;
 }
 
 .reviews-head__title {
-  font-size: clamp(54px, 7vw, 92px);
-  margin-top: 12px;
+  font-size: clamp(58px, 7vw, 98px);
+  line-height: 0.8;
   display: flex;
-  flex-wrap: wrap;
-  gap: 0 18px;
+  flex-direction: column;
 }
 
 .reviews-controls {
   display: flex;
-  gap: 10px;
+  gap: 8px;
 }
 
 .reviews-nav-btn {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  border: 1px solid var(--hairline-light);
-  background: var(--sorot-white);
-  color: var(--ink-on-light);
+  border: 0;
+  background: var(--pill-tonal);
+  color: var(--sorot-obsidian);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition:
-    background-color var(--dur-fast) ease,
-    color var(--dur-fast) ease,
-    transform var(--dur-fast) var(--ease-snap);
+  transition: background-color var(--dur-fast) ease, color var(--dur-fast) ease;
 }
 
 .reviews-nav-btn:hover {
   background: var(--sorot-obsidian);
   color: var(--sorot-white);
-  transform: scale(1.05);
 }
 
 .reviews-track {
   display: flex;
-  gap: 16px;
+  gap: 14px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  padding-bottom: 12px;
-  scrollbar-width: thin;
+  padding-bottom: 10px;
+  scrollbar-width: none;
+}
+
+.reviews-track::-webkit-scrollbar {
+  display: none;
 }
 
 .review-card {
-  flex: 0 0 min(380px, 84vw);
+  flex: 0 0 min(358px, 84vw);
+  min-height: 408px;
   scroll-snap-align: start;
-  border-radius: 22px;
+  border-radius: 20px;
   background: var(--card-tonal);
-  padding: 28px;
+  padding: 26px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 28px;
-  min-height: 320px;
+  gap: 32px;
 }
 
 .review-card__author {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
-.review-card__monogram {
-  width: 46px;
-  height: 46px;
-  border-radius: 14px;
-  background: var(--sorot-obsidian);
+.review-card__badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
   color: var(--sorot-white);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-weight: 800;
+  font-size: 14px;
   flex-shrink: 0;
 }
 
 .review-card__name {
-  display: block;
-  font-size: 15.5px;
+  margin: 0;
+  font-size: 14px;
   font-weight: 700;
-  color: var(--ink-on-light);
+  color: var(--sorot-obsidian);
 }
 
 .review-card__role {
-  font-size: 13px;
+  margin: 2px 0 0;
+  font-size: 12px;
+  font-weight: 500;
   color: var(--ink-muted-on-light);
 }
 
 .review-card__quote {
   margin: 0;
-  font-size: 15.5px;
-  line-height: 1.55;
-  color: var(--ink-on-light);
-}
-
-.review-card__project {
-  color: var(--ink-accent-on-light);
+  font-size: 15px;
+  line-height: 1.42;
+  color: var(--sorot-obsidian);
 }
 
 /* ============================================================
-   NARROW EDITORIAL FAQ ACCORDION
+   ACT 11B: NARROW 760PX EDITORIAL FAQ ACCORDION
+   (Exact s11-faq.jpg twin!)
    ============================================================ */
 .faq-section {
-  padding: clamp(44px, 5vw, 72px) 0 clamp(104px, 10vw, 148px);
+  padding: clamp(56px, 6vw, 88px) 0 clamp(104px, 10vw, 152px);
 }
 
 .faq-container {
-  max-width: 780px;
+  max-width: 800px;
 }
 
 .faq-head {
@@ -984,11 +1360,22 @@
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  margin-bottom: 38px;
+  margin-bottom: 44px;
+}
+
+.faq-eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sorot-obsidian);
 }
 
 .faq-head__title {
-  font-size: clamp(48px, 6.2vw, 82px);
+  font-size: clamp(58px, 7vw, 98px);
+  line-height: 0.8;
+  display: flex;
+  flex-direction: column;
 }
 
 .faq-list {
@@ -1009,61 +1396,56 @@
   align-items: center;
   justify-content: space-between;
   gap: 18px;
-  padding: 22px 4px;
+  padding: 20px 2px;
   border: 0;
   background: transparent;
   text-align: left;
-  font-family: var(--font-sans);
-  font-size: clamp(16px, 1.45vw, 18.5px);
-  font-weight: 600;
-  color: var(--ink-on-light);
+  font-size: 15.5px;
+  font-weight: 500;
+  color: var(--sorot-obsidian);
 }
 
 .faq-item__trigger:hover .faq-item__question {
-  color: var(--ink-accent-on-light);
+  color: var(--sorot-vermilion);
 }
 
 .faq-item__icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: var(--card-tonal);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  color: var(--sorot-obsidian);
   flex-shrink: 0;
-  color: var(--ink-on-light);
-}
-
-.faq-item--open .faq-item__icon {
-  background: var(--sorot-vermilion);
-  color: var(--sorot-white);
 }
 
 .faq-item__panel {
-  padding: 0 44px 22px 4px;
+  padding: 0 36px 20px 2px;
   color: var(--ink-muted-on-light);
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 14.5px;
+  line-height: 1.56;
 }
 
 .faq-item__panel p {
   margin: 0;
 }
 
+.faq-more-wrap {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+}
+
 /* ============================================================
-   CLOSING MONOLITH VERMILION CTA & HIGH-CONTRAST GLASS FOOTER
+   ACT 12: SIGNAL VERMILION MONOLITH CTA + GLASS FOOTER
+   (Exact footer-1440.png twin!)
    ============================================================ */
 .monolith-footer {
-  padding: clamp(104px, 10vw, 152px) 0 clamp(32px, 4vw, 48px);
+  padding: clamp(96px, 10vw, 148px) 0 clamp(32px, 4vw, 44px);
 }
 
 .monolith-footer__inner {
   position: relative;
   z-index: 12;
+  max-width: 1220px;
   display: flex;
   flex-direction: column;
-  gap: clamp(56px, 7vw, 96px);
+  gap: clamp(88px, 11vw, 152px);
 }
 
 .monolith-footer__cta {
@@ -1071,20 +1453,12 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 24px;
-}
-
-.monolith-footer__eyebrow {
-  padding: 6px 14px;
-  border-radius: var(--radius-pill);
-  background: rgba(17, 18, 20, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  color: var(--sorot-white);
+  gap: 28px;
 }
 
 .monolith-footer__headline {
-  font-size: clamp(68px, 12vw, 174px);
-  line-height: 0.8;
+  font-size: clamp(64px, 11.2vw, 158px);
+  line-height: 0.78;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1098,73 +1472,107 @@
   color: var(--sorot-obsidian);
 }
 
-.monolith-footer__cta .split-pill {
-  position: relative;
-  z-index: 8;
-}
-
-/* Calibrated Protective Dark-Vermilion Scrim Footer Card (ZERO glare washout, >= 8:1 contrast!) */
+/* High-Contrast Frosted Glass Footer Sheet matching footer-1440.png */
 .glass-footer-card {
   position: relative;
-  z-index: 8;
-  border-radius: 28px;
-  padding: clamp(28px, 3.6vw, 48px);
-  background: rgba(17, 18, 20, 0.48);
+  z-index: 10;
+  border-radius: 26px;
+  padding: clamp(32px, 3.8vw, 52px);
+  background: rgba(17, 18, 20, 0.34);
   border: 1px solid rgba(255, 255, 255, 0.24);
-  box-shadow: 0 28px 64px rgba(17, 18, 20, 0.26);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 28px 64px rgba(17, 18, 20, 0.22);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
   color: var(--sorot-white);
 }
 
 .glass-footer-card__grid {
   display: grid;
-  grid-template-columns: 1.35fr repeat(3, minmax(0, 1fr));
-  gap: clamp(24px, 3.4vw, 44px);
-  padding-bottom: 36px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  grid-template-columns: 1.45fr 0.9fr 1fr 1.1fr;
+  gap: clamp(24px, 3.2vw, 44px);
+  padding-bottom: 40px;
 }
 
 .glass-footer-card__brand {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  align-items: flex-start;
+  gap: 20px;
 }
 
 .glass-footer-card__wordmark {
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 40px;
-  letter-spacing: 0.02em;
-  line-height: 0.9;
+  display: flex;
+  flex-direction: column;
+  line-height: 0.85;
+  font-weight: 700;
+  font-size: 24px;
+  letter-spacing: -0.045em;
+}
+
+.glass-footer-card__wordmark span:last-child {
+  padding-left: 12px;
+}
+
+.footer-lang-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-lang-pill {
+  border: 0;
+  background: transparent;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.footer-lang-pill.is-active {
+  background: var(--sorot-white);
+  color: var(--sorot-obsidian);
+}
+
+.glass-footer-card__cities {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
   color: var(--sorot-white);
 }
 
-.glass-footer-card__tagline {
-  margin: 0;
-  max-width: 300px;
-  font-size: 14px;
-  color: #f2f4f8;
-}
-
-.glass-footer-card__certs {
+.glass-footer-card__emblems {
+  margin-top: auto;
+  padding-top: 16px;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 6px;
+  gap: 18px;
 }
 
-.glass-footer-card__cert-badge {
-  padding: 5px 10px;
-  border-radius: 8px;
-  background: rgba(17, 18, 20, 0.56);
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  color: var(--sorot-white);
+.footer-emblem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.footer-emblem strong {
+  font-family: var(--font-display);
+  font-size: 26px;
+  line-height: 0.9;
+}
+
+.footer-emblem small {
+  font-size: 9.5px;
+  opacity: 0.85;
 }
 
 .glass-footer-card__col-title {
   margin: 0 0 14px;
-  color: var(--sorot-ice);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.68);
 }
 
 .glass-footer-card__links {
@@ -1173,65 +1581,67 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 7px;
 }
 
 .glass-footer-card__links a {
-  font-size: 14.5px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--sorot-white);
-  transition: color var(--dur-fast) ease;
+  transition: opacity var(--dur-fast) ease;
+}
+
+.glass-footer-card__links--large a {
+  font-size: 18px;
+  line-height: 1.25;
 }
 
 .glass-footer-card__links a:hover {
-  color: var(--sorot-ice);
-}
-
-.glass-footer-card__cities {
-  margin: 0 0 16px;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--sorot-white);
-}
-
-.glass-footer-card__contact {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.glass-footer-card__contact a {
-  font-weight: 600;
-  color: var(--sorot-ice);
-}
-
-.glass-footer-card__contact span {
-  color: #e8ecf2;
+  opacity: 0.75;
 }
 
 .glass-footer-card__bottom {
   padding-top: 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
-  color: #f0f3f7;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.glass-footer-card__socials {
+  display: flex;
+  gap: 10px;
+}
+
+.glass-footer-card__socials a {
+  width: 24px;
+  height: 24px;
+  border-radius: 5px;
+  background: var(--sorot-white);
+  color: var(--sorot-vermilion);
+  font-size: 11px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .glass-footer-card__legal {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 18px;
   flex-wrap: wrap;
-  font-size: 13.5px;
 }
 
 .glass-footer-card__text-btn {
   border: 0;
   padding: 0;
   background: transparent;
-  color: var(--sorot-ice);
+  color: var(--sorot-white);
   font-weight: 600;
 }
 
@@ -1239,53 +1649,13 @@
    RESPONSIVE BREAKPOINTS (1024px & 390px MOBILE)
    ============================================================ */
 @media (max-width: 1024px) {
-  .proof-grid,
-  .standards-cards {
+  .expertises-stage,
+  .spotlight-grid {
     grid-template-columns: 1fr;
   }
 
-  .standard-glass-card--2 {
-    transform: none;
-  }
-
-  .standards-cards {
-    margin-top: 32px;
-  }
-
-  .disciplines-layout {
+  .resources-grid {
     grid-template-columns: 1fr;
-  }
-
-  .disciplines-preview-col {
-    display: none;
-  }
-
-  .discipline-row--active .discipline-row__mobile-preview {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 4px 8px 22px;
-  }
-
-  .discipline-row__mobile-img {
-    border-radius: 16px;
-    overflow: hidden;
-    aspect-ratio: 16 / 10;
-  }
-
-  .discipline-row__mobile-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .discipline-row__spec {
-    color: var(--ink-accent-on-light);
-  }
-
-  .discipline-row__summary {
-    margin: 0;
-    color: var(--ink-muted-on-light);
   }
 
   .glass-footer-card__grid {
@@ -1293,40 +1663,72 @@
   }
 }
 
-@media (max-width: 680px) {
-  .hero-stage__viewport {
-    min-height: 92vh;
-    padding: 96px 0 124px;
+@media (max-width: 767px) {
+  .hero-track {
+    height: 240vh;
+    min-height: 1750px;
   }
 
-  .hero-stage__headline {
-    font-size: clamp(48px, 15vw, 74px);
-    padding-inline: 4px;
+  .hero-poster-wrap {
+    opacity: 1;
+    padding-top: 64px;
+    gap: 36px;
+  }
+
+  .hero-poster-line {
+    font-size: clamp(54px, 16.5vw, 88px);
   }
 
   .scroll-stamp {
     display: none;
   }
 
-  .hero-dome-transition__arc {
-    top: -40px;
-    height: 80px;
+  .sticker-sticky {
+    position: relative;
+    top: 0;
+  }
+
+  .sticker-track--amber,
+  .sticker-track--cyan {
+    min-height: auto;
+  }
+
+  .works-header {
+    padding-left: 0;
   }
 
   .works-grid {
     grid-template-columns: 1fr;
   }
 
-  .work-card {
-    aspect-ratio: 4 / 3;
+  .work-card--even {
+    transform: none;
+  }
+
+  .vr-portal__offset-col {
+    align-self: center;
+    margin-top: 16px;
+  }
+
+  .quality-wall__display {
+    font-size: clamp(58px, 17vw, 96px);
+  }
+
+  .quality-glass-card {
+    min-height: 380px;
+    padding: 28px 22px;
+  }
+
+  .reviews-head {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .glass-footer-card__grid {
     grid-template-columns: 1fr;
   }
 
-  /* Leave breathing room for compact mobile bottom cue dock */
   .monolith-footer {
-    padding-bottom: 108px;
+    padding-bottom: 164px;
   }
 }

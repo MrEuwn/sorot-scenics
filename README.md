@@ -2,24 +2,26 @@
 
 **Live Demo:** [https://sorot-scenics.vercel.app](https://sorot-scenics.vercel.app) · **Repository:** [github.com/MrEuwn/sorot-scenics](https://github.com/MrEuwn/sorot-scenics)
 
-> **Project Status:** `Self-initiated` (Awwwards-grade chromatic drenched brand & WebGL optical glass portfolio showcase accompanying [Rumah Wiraloka](https://wiraloka-batik.vercel.app)).
+> **Project Status:** `Self-initiated` (Awwwards-grade chromatic stage scenography & WebGL2 refractive prism showcase accompanying [Rumah Wiraloka](https://wiraloka-batik.vercel.app)).
 
-SOROT is an architectural stage scenography and live broadcast lighting studio operating across Jakarta, Singapore, Tokyo, and Berlin, featuring a single shared Three.js WebGL2 Fresnel optical glass prism engine, interactive bottom-left DMX Live Lighting Cue Console, multi-chapter chromatic polarity transitions (`Signal Vermilion` <-> `Chalk Paper` <-> `Carbon Obsidian`), pauseable WCAG 2.2.2 ticker, and calibrated high-contrast glass surfaces.
+Kinetic stage scenography and live broadcast lighting studio showcase built with React, Vite, Three.js WebGL2, and Lenis smooth inertia scroll, featuring a 12-act scroll choreography, real-time FBO glass prism typography refraction, chromatic sticker manifesto tracks, a 3D spherical stage-screen portal, flying frosted certification cards, and bilingual `EN / ID` switching.
 
-## Visual Previews
+## Visual & Scroll Choreography
 
-| Signal Vermilion Hero & 3D Fresnel Prisms | Selected Stage Productions & DMX Telemetry |
-| :---: | :---: |
-| ![SOROT Hero & Fresnel Glass Optics](./docs/preview-hero.png) | ![SOROT Selected Stage Works](./docs/preview-works.png) |
-
-![SOROT Carbon Obsidian Standards Glass Wall](./docs/preview-standards.png)
-
-## Architecture Highlights
-
-- **Single Shared Three.js WebGL2 Fresnel Prism Engine (`src/components/FresnelStageCanvas.jsx`)**: Custom GLSL beveled optical glass shader rendering sculpted right-triangular Fresnel louvers in the hero stage and cantilevered horizontal glass louver beams in the closing monolith footer.
-- **Interactive Bottom-Left Live Lighting Cue Console (`src/components/LiveCueWidget.jsx`)**: Real-time DMX timecode monitor with 3 mechanical cue switches (`01 VERMILION ARENA`, `02 DAYLIGHT GALLERY`, `03 CHIAROSCURO RIG`) that dynamically mutate live WebGL shader optics, stage beam lighting, and hero atmosphere polarity, paired with a technical specification drawer.
-- **Multi-Chapter Chromatic Polarity Shifts**: Seamless transitions across Signal Vermilion (`#D9381E`), Chalk Paper (`#F6F5F0`), Carbon Obsidian (`#111214`), and Optical Ice (`#CFF4FF`) with IntersectionObserver adaptive header backing.
-- **Accessibility & Performance Craft**: Instant LCP with zero blocking preloaders, zero hidden iframes, explicit `Pause / Play` ticker controls (WCAG 2.2.2), full `prefers-reduced-motion` compliance, explicit `IBM Plex Sans` button font inheritance, and WCAG AA/AAA calibrated contrast across glass surfaces.
+- **Multi-Chapter Chromatic Polarity**: Signal Vermilion (`#D9381E`), Studio Paper (`#F7F6F2`), Deep Carbon Obsidian (`#0A0B10`), Warm Stage Amber (`#FFB800`), and Dichroic Ice Cyan (`#29DAFF`) with verified WCAG AA/AAA contrast ratios.
+- **12-Act Continuous Scroll Flow**:
+  1. Geometric twin-prism (`▷◁`) Signal Vermilion preloader parting into the stage.
+  2. Pinned `330vh` Hero stage with 9 sculpted 3D beveled right-triangle prisms refracting the staggered two-block `Big Shoulders Display` poster headline in real time as a curved white studio arch rises into the H1 thesis.
+  3. Pinned Warm Stage Amber (`#FFB800`) sticker track with word-by-word scroll-scrubbed editorial typography.
+  4. Panoramic `2x4` square-ish (`1.05:1`) stage productions grid with odd/even column parallax and technical dossier modal.
+  5. Edge-to-edge `144px` Vermilion marquee + centered engineering methodology & verification badges.
+  6. Pinned Dichroic Ice-Cyan (`#29DAFF`) sticker track with 3 staggered left/right/left proof statements.
+  7. Monumental `84px` kinetic disciplines router paired with a live stage preview plate.
+  8. Pinned `270vh` 3D rotating spherical mosaic globe of 18 glowing live stage cues & timecode monitors.
+  9. Studio culture spotlight with animated geometric bowtie emblem and beveled optical wedge frame.
+  10. 3-column tall field resources grid featuring a tilted 3D Signal Vermilion embossed handbook cover.
+  11. Pinned `330vh` Deep Carbon Obsidian `216px` quality monolith with 3 sequentially flying frosted `superGlass` certification cards.
+  12. Tonal horizontal show-director reviews carousel, narrow `800px` expandable FAQ accordion, bottom-left live stage showreel & 3-cue switcher, and Signal Vermilion cantilevered 3D glass beam footer with `EN / ID` switching.
 
 ## Local Development
 

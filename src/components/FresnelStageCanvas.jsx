@@ -1,33 +1,34 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
+import { UI_COPY } from '../data/sorotData';
 
-const CUE_SHADER_PROFILES = {
+const CUE_PROFILES = {
   vermilion: {
-    glassTint: new THREE.Color('#E8472A'),
-    shadowTint: new THREE.Color('#7C1909'),
-    edgeColor: new THREE.Color('#FFF4EE'),
-    iceColor: new THREE.Color('#CFF4FF'),
-    opacityScale: 0.92,
-    specularBoost: 1.25,
-    ambientLift: 0.24,
+    bgHex: '#D9381E',
+    glassTint: new THREE.Color('#E84327'),
+    shadowTint: new THREE.Color('#8A1A08'),
+    edgeColor: new THREE.Color('#FFF6F0'),
+    iceColor: new THREE.Color('#FFD9C7'),
+    punchHex: '#111214',
+    mainHex: '#FFFFFF',
   },
   daylight: {
-    glassTint: new THREE.Color('#E4E8EE'),
-    shadowTint: new THREE.Color('#8E97A6'),
+    bgHex: '#ECEAE4',
+    glassTint: new THREE.Color('#F5F4F0'),
+    shadowTint: new THREE.Color('#C5C8D2'),
     edgeColor: new THREE.Color('#FFFFFF'),
-    iceColor: new THREE.Color('#9EDAF2'),
-    opacityScale: 0.88,
-    specularBoost: 1.45,
-    ambientLift: 0.34,
+    iceColor: new THREE.Color('#D9381E'),
+    punchHex: '#D9381E',
+    mainHex: '#111214',
   },
   chiaroscuro: {
-    glassTint: new THREE.Color('#19212D'),
-    shadowTint: new THREE.Color('#07090D'),
+    bgHex: '#0E1015',
+    glassTint: new THREE.Color('#1B2330'),
+    shadowTint: new THREE.Color('#06080C'),
     edgeColor: new THREE.Color('#CFF4FF'),
-    iceColor: new THREE.Color('#6CE6FF'),
-    opacityScale: 1.0,
-    specularBoost: 1.85,
-    ambientLift: 0.12,
+    iceColor: new THREE.Color('#29DAFF'),
+    punchHex: '#29DAFF',
+    mainHex: '#FFFFFF',
   },
 };
 
@@ -35,122 +36,121 @@ const VERTEX_SHADER = /* glsl */ `
   varying vec3 vWorldNormal;
   varying vec3 vViewDir;
   varying vec3 vLocalPos;
-  varying vec2 vUv;
+  varying vec4 vClipPos;
 
   void main() {
-    vUv = uv;
     vLocalPos = position;
     vec4 worldPosition = modelMatrix * vec4(position, 1.0);
     vWorldNormal = normalize(mat3(modelMatrix) * normal);
     vViewDir = normalize(cameraPosition - worldPosition.xyz);
-    gl_Position = projectionMatrix * viewMatrix * worldPosition;
+    vClipPos = projectionMatrix * viewMatrix * worldPosition;
+    gl_Position = vClipPos;
   }
 `;
 
 const FRAGMENT_SHADER = /* glsl */ `
+  uniform sampler2D uBackdropTex;
+  uniform float uUseBackdrop;
+  uniform float uPaperMix;
   uniform vec3 uGlassTint;
   uniform vec3 uShadowTint;
   uniform vec3 uEdgeColor;
   uniform vec3 uIceColor;
-  uniform float uOpacityScale;
-  uniform float uSpecularBoost;
-  uniform float uAmbientLift;
-  uniform float uTime;
+  uniform float uAmbientMode;
   uniform vec2 uPointer;
 
   varying vec3 vWorldNormal;
   varying vec3 vViewDir;
   varying vec3 vLocalPos;
-  varying vec2 vUv;
+  varying vec4 vClipPos;
 
   void main() {
     vec3 N = normalize(vWorldNormal);
     vec3 V = normalize(vViewDir);
 
-    // Three directional arena studio lights shifted subtly by pointer
-    vec3 L1 = normalize(vec3(0.65 + uPointer.x * 0.35, 0.82 - uPointer.y * 0.25, 0.72));
-    vec3 L2 = normalize(vec3(-0.85, -0.35, 0.55));
-    vec3 L3 = normalize(vec3(0.15, -0.92, 0.42));
+    vec3 L1 = normalize(vec3(0.58 + uPointer.x * 0.28, 0.84 - uPointer.y * 0.22, 0.76));
+    vec3 L2 = normalize(vec3(-0.82, -0.42, 0.56));
 
     float ndotv = clamp(abs(dot(N, V)), 0.0, 1.0);
-    float fresnel = pow(1.0 - ndotv, 2.35);
+    float fresnel = pow(1.0 - ndotv, 2.5);
+    float bevelMask = smoothstep(0.14, 0.76, 1.0 - abs(N.z));
 
-    // Detect beveled rim facets (normals tilted away from flat Z face)
-    float bevelMask = smoothstep(0.15, 0.78, 1.0 - abs(N.z));
-
-    // Diffuse glass depth shading
     float diff1 = max(dot(N, L1), 0.0);
     float diff2 = max(dot(N, L2), 0.0);
-    float faceGrad = clamp(0.45 + vLocalPos.y * 0.14 - vLocalPos.x * 0.08, 0.0, 1.0);
+    float faceGrad = clamp(0.48 + vLocalPos.y * 0.11 - vLocalPos.x * 0.07, 0.0, 1.0);
 
-    vec3 bodyColor = mix(uShadowTint, uGlassTint, clamp(diff1 * 0.62 + faceGrad * 0.45 + uAmbientLift, 0.0, 1.0));
+    vec2 screenUv = (vClipPos.xy / max(vClipPos.w, 0.0001)) * 0.5 + 0.5;
+    vec2 refractOffset = N.xy * (0.052 + bevelMask * 0.045) + vec2(vLocalPos.x, -vLocalPos.y) * 0.008;
 
-    // Subtle optical Fresnel fluting ribs across the glass surface
-    float ribPhase = (vLocalPos.x * 0.72 + vLocalPos.y * 0.72) * 5.2 + uTime * 0.18;
-    float fresnelRibs = sin(ribPhase) * 0.5 + 0.5;
-    bodyColor += uEdgeColor * (fresnelRibs * 0.045 * (1.0 - bevelMask));
+    vec3 refracted = vec3(0.0);
+    if (uUseBackdrop > 0.01) {
+      float r = texture2D(uBackdropTex, clamp(screenUv + refractOffset * 1.12, 0.002, 0.998)).r;
+      float g = texture2D(uBackdropTex, clamp(screenUv + refractOffset * 1.00, 0.002, 0.998)).g;
+      float b = texture2D(uBackdropTex, clamp(screenUv + refractOffset * 0.88, 0.002, 0.998)).b;
+      refracted = vec3(r, g, b);
+    }
 
-    // Sharp architectural specular reflections on beveled chamfers
+    vec3 activeTint = mix(uGlassTint, vec3(0.955, 0.952, 0.945), uPaperMix * 0.88);
+    vec3 activeShadow = mix(uShadowTint, vec3(0.81, 0.82, 0.85), uPaperMix * 0.88);
+    vec3 activeEdge = mix(uEdgeColor, vec3(1.0, 1.0, 1.0), uPaperMix * 0.7);
+
+    vec3 bodyGlass = mix(activeShadow, activeTint, clamp(diff1 * 0.58 + faceGrad * 0.48, 0.0, 1.0));
+    vec3 baseCol = mix(bodyGlass, mix(refracted, bodyGlass, 0.24 + bevelMask * 0.34), uUseBackdrop);
+
     vec3 H1 = normalize(L1 + V);
     vec3 H2 = normalize(L2 + V);
-    vec3 H3 = normalize(L3 + V);
+    float spec1 = pow(max(dot(N, H1), 0.0), 48.0) * 1.25;
+    float spec2 = pow(max(dot(N, H2), 0.0), 24.0) * 0.55;
 
-    float spec1 = pow(max(dot(N, H1), 0.0), 42.0) * 1.15;
-    float spec2 = pow(max(dot(N, H2), 0.0), 26.0) * 0.65;
-    float spec3 = pow(max(dot(N, H3), 0.0), 20.0) * 0.45;
+    vec3 bevelRim = activeEdge * (bevelMask * (0.52 + diff1 * 0.72)) + uIceColor * (bevelMask * diff2 * 0.32 * (1.0 - uPaperMix * 0.6));
+    vec3 finalCol = baseCol + bevelRim + activeEdge * (spec1 + fresnel * 0.28) + uIceColor * (spec2 * 0.45);
 
-    // Crisp rim reflection along bevels + subtle dichroic ice dispersion
-    vec3 bevelLight = uEdgeColor * (bevelMask * (0.42 + diff1 * 0.68)) + uIceColor * (bevelMask * diff2 * 0.52);
-    vec3 specLight = uEdgeColor * (spec1 * uSpecularBoost) + uIceColor * ((spec2 + spec3) * 0.85 * uSpecularBoost);
+    if (uAmbientMode > 0.5) {
+      vec3 paperBody = mix(vec3(0.925, 0.922, 0.912), vec3(0.992, 0.991, 0.988), clamp(diff1 * 0.65 + faceGrad * 0.42, 0.0, 1.0));
+      finalCol = paperBody + vec3(1.0) * (bevelMask * 0.35 + spec1 * 0.45);
+      float ambAlpha = clamp(0.18 + bevelMask * 0.28 + fresnel * 0.14, 0.0, 0.52);
+      gl_FragColor = vec4(finalCol, ambAlpha);
+      return;
+    }
 
-    // Thin glossy sweep across flat face
-    float faceSweep = smoothstep(0.62, 0.96, dot(reflect(-V, N), L1));
-    vec3 finalColor = bodyColor + bevelLight + specLight + uEdgeColor * (fresnel * 0.32 + faceSweep * 0.16);
-
-    // Calibrated optical alpha: translucent interior, crisp dense bevels
-    float baseAlpha = mix(0.26, 0.78, bevelMask);
-    float alpha = clamp((baseAlpha + fresnel * 0.34 + spec1 * 0.38) * uOpacityScale, 0.16, 0.96);
-
-    gl_FragColor = vec4(finalColor, alpha);
+    float alpha = mix(0.84, 0.97, bevelMask);
+    alpha = mix(alpha, clamp(0.76 + bevelMask * 0.22 + spec1 * 0.25, 0.0, 0.98), uUseBackdrop);
+    gl_FragColor = vec4(finalCol, alpha);
   }
 `;
 
-function createRoundedTriangleGeometry(width, height, radius, depth, bevelSize) {
+function createPlayPrismGeometry(size, depth, bevelSize) {
   const shape = new THREE.Shape();
-  const x0 = -width * 0.5;
-  const y0 = -height * 0.5;
-  const x1 = width * 0.5;
-  const y1 = height * 0.5;
-  const r = Math.min(radius, width * 0.16, height * 0.16);
+  const s = size * 0.5;
+  const r = size * 0.045;
 
-  // Right triangle with rounded architectural corners (classic prism louver silhouette)
-  shape.moveTo(x0 + r, y0);
-  shape.lineTo(x1 - r, y0);
-  shape.quadraticCurveTo(x1, y0, x1, y0 + r);
-  shape.lineTo(x1, y1 - r * 1.35);
-  shape.quadraticCurveTo(x1, y1, x1 - r * 1.35, y1 - r * 0.4);
-  shape.lineTo(x0 + r * 0.45, y0 + r * 1.25);
-  shape.quadraticCurveTo(x0, y0 + r * 0.55, x0 + r, y0);
+  // Crisp architectural 45-deg right-triangle plate matching laboiteaslides hero-1440.png
+  shape.moveTo(-s + r, -s);
+  shape.lineTo(s - r * 1.4, -s);
+  shape.quadraticCurveTo(s, -s, s - r * 0.35, -s + r * 1.05);
+  shape.lineTo(-s + r * 1.05, s - r * 0.35);
+  shape.quadraticCurveTo(-s, s, -s, s - r * 1.4);
+  shape.lineTo(-s, -s + r);
+  shape.quadraticCurveTo(-s, -s, -s + r, -s);
 
   const geo = new THREE.ExtrudeGeometry(shape, {
     depth,
     bevelEnabled: true,
-    bevelThickness: bevelSize * 1.15,
+    bevelThickness: bevelSize * 1.2,
     bevelSize,
-    bevelOffset: 0,
     bevelSegments: 5,
-    curveSegments: 16,
+    curveSegments: 14,
   });
   geo.center();
   geo.computeVertexNormals();
   return geo;
 }
 
-function createBeveledBeamGeometry(width, height, radius, depth, bevelSize) {
+function createBeveledBeamGeometry(width, height, depth, bevelSize) {
   const shape = new THREE.Shape();
   const hw = width * 0.5;
   const hh = height * 0.5;
-  const r = Math.min(radius, hw * 0.4, hh * 0.4);
+  const r = Math.min(0.12, hh * 0.35);
 
   shape.moveTo(-hw + r, -hh);
   shape.lineTo(hw - r, -hh);
@@ -165,23 +165,28 @@ function createBeveledBeamGeometry(width, height, radius, depth, bevelSize) {
   const geo = new THREE.ExtrudeGeometry(shape, {
     depth,
     bevelEnabled: true,
-    bevelThickness: bevelSize * 1.1,
+    bevelThickness: bevelSize * 1.15,
     bevelSize,
     bevelSegments: 5,
-    curveSegments: 12,
+    curveSegments: 10,
   });
   geo.center();
   geo.computeVertexNormals();
   return geo;
 }
 
-export default function FresnelStageCanvas({ activeCueId }) {
+export default function FresnelStageCanvas({ activeCueId, lang = 'en' }) {
   const canvasRef = useRef(null);
   const cueRef = useRef(activeCueId);
+  const langRef = useRef(lang);
 
   useEffect(() => {
     cueRef.current = activeCueId;
   }, [activeCueId]);
+
+  useEffect(() => {
+    langRef.current = lang;
+  }, [lang]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -202,13 +207,79 @@ export default function FresnelStageCanvas({ activeCueId }) {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.setClearColor(0x000000, 0);
 
+    // Offscreen 2D CanvasTexture for genuine optical refraction of Hero Poster Text + Rising White Arch!
+    const backdropCanvas = document.createElement('canvas');
+    backdropCanvas.width = 1440;
+    backdropCanvas.height = 900;
+    const bCtx = backdropCanvas.getContext('2d');
+    const backdropTex = new THREE.CanvasTexture(backdropCanvas);
+    backdropTex.minFilter = THREE.LinearFilter;
+    backdropTex.magFilter = THREE.LinearFilter;
+
+    const drawBackdrop = (heroProg, profile, copy) => {
+      if (!bCtx) return;
+      const W = backdropCanvas.width;
+      const H = backdropCanvas.height;
+
+      bCtx.fillStyle = profile.bgHex;
+      bCtx.fillRect(0, 0, W, H);
+
+      // Rising white studio paper arch (matches .hero-arch-dome exactly)
+      const archProgress = THREE.MathUtils.clamp((heroProg - 0.14) / 0.56, 0, 1);
+      if (archProgress > 0.005) {
+        const archTopY = H * (1.06 - archProgress * 1.18);
+        bCtx.fillStyle = '#F7F6F2';
+        bCtx.beginPath();
+        bCtx.moveTo(-120, H + 40);
+        bCtx.lineTo(-120, archTopY + 130);
+        bCtx.quadraticCurveTo(W * 0.5, archTopY - 120, W + 120, archTopY + 130);
+        bCtx.lineTo(W + 120, H + 40);
+        bCtx.closePath();
+        bCtx.fill();
+      }
+
+      // Giant 2-block condensed poster headline for authentic glass refraction!
+      const textReveal = THREE.MathUtils.clamp((heroProg - 0.03) / 0.52, 0, 1);
+      const textFadeOut = 1 - THREE.MathUtils.clamp((heroProg - 0.56) / 0.18, 0, 1);
+      if (textReveal > 0.01 && textFadeOut > 0.01) {
+        bCtx.save();
+        bCtx.globalAlpha = textFadeOut;
+        const baseShiftY = (1 - textReveal) * 460 - heroProg * 280;
+        bCtx.font = '900 156px "Big Shoulders Display", Impact, sans-serif';
+        bCtx.textBaseline = 'top';
+
+        const onPaper = archProgress > 0.52;
+        const primaryInk = onPaper ? '#111214' : profile.mainHex;
+        const punchInk = onPaper ? '#D9381E' : profile.punchHex;
+
+        // Left block
+        const leftLines = copy.heroBlockLeft || ['GREAT STAGES', 'SHAPE THE', 'FUTURE'];
+        leftLines.forEach((line, i) => {
+          bCtx.fillStyle = i === leftLines.length - 1 ? punchInk : primaryInk;
+          bCtx.textAlign = 'left';
+          bCtx.fillText(line, 148, 86 + baseShiftY + i * 118);
+        });
+
+        // Right block
+        const rightLines = copy.heroBlockRight || ['WHEN LIGHT', 'COMMANDS', 'EVERY CUE'];
+        rightLines.forEach((line, i) => {
+          bCtx.fillStyle = i === rightLines.length - 1 ? punchInk : primaryInk;
+          bCtx.textAlign = 'right';
+          bCtx.fillText(line, W - 148, 410 + baseShiftY + i * 118);
+        });
+        bCtx.restore();
+      }
+
+      backdropTex.needsUpdate = true;
+    };
+
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.set(0, 0, 13.5);
+    const camera = new THREE.PerspectiveCamera(36, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 0, 14);
 
-    const initialProfile = CUE_SHADER_PROFILES[cueRef.current] || CUE_SHADER_PROFILES.vermilion;
+    const initProf = CUE_PROFILES[cueRef.current] || CUE_PROFILES.vermilion;
 
-    const createPrismMaterial = (opacityMult = 1.0) =>
+    const createMat = () =>
       new THREE.ShaderMaterial({
         vertexShader: VERTEX_SHADER,
         fragmentShader: FRAGMENT_SHADER,
@@ -216,224 +287,256 @@ export default function FresnelStageCanvas({ activeCueId }) {
         depthWrite: false,
         side: THREE.DoubleSide,
         uniforms: {
-          uGlassTint: { value: initialProfile.glassTint.clone() },
-          uShadowTint: { value: initialProfile.shadowTint.clone() },
-          uEdgeColor: { value: initialProfile.edgeColor.clone() },
-          uIceColor: { value: initialProfile.iceColor.clone() },
-          uOpacityScale: { value: initialProfile.opacityScale * opacityMult },
-          uSpecularBoost: { value: initialProfile.specularBoost },
-          uAmbientLift: { value: initialProfile.ambientLift },
-          uTime: { value: 0 },
+          uBackdropTex: { value: backdropTex },
+          uUseBackdrop: { value: 1.0 },
+          uPaperMix: { value: 0.0 },
+          uGlassTint: { value: initProf.glassTint.clone() },
+          uShadowTint: { value: initProf.shadowTint.clone() },
+          uEdgeColor: { value: initProf.edgeColor.clone() },
+          uIceColor: { value: initProf.iceColor.clone() },
+          uAmbientMode: { value: 0.0 },
           uPointer: { value: new THREE.Vector2(0, 0) },
         },
       });
 
-    const heroMaterial = createPrismMaterial(1.0);
-    const footerMaterial = createPrismMaterial(0.95);
-    const allMaterials = [heroMaterial, footerMaterial];
+    const heroMat = createMat();
+    const ambientMat = createMat();
+    ambientMat.uniforms.uUseBackdrop.value = 0.0;
+    ambientMat.uniforms.uAmbientMode.value = 1.0;
 
-    // HERO GROUP: Sculptural beveled architectural Fresnel triangular louvers
+    const footerMat = createMat();
+    footerMat.uniforms.uUseBackdrop.value = 0.0;
+
+    // HERO DENSE PRISM MOSAIC (Exact architectural diagonal cadence of laboiteaslides hero-1440.png!)
     const heroGroup = new THREE.Group();
     scene.add(heroGroup);
 
-    const triGeoLarge = createRoundedTriangleGeometry(4.4, 4.1, 0.24, 0.24, 0.085);
-    const triGeoMed = createRoundedTriangleGeometry(3.2, 3.0, 0.2, 0.22, 0.075);
-    const triGeoWide = createRoundedTriangleGeometry(5.1, 3.3, 0.26, 0.26, 0.09);
+    const prismXL = createPlayPrismGeometry(4.9, 0.24, 0.085);
+    const prismLG = createPlayPrismGeometry(3.85, 0.22, 0.075);
+    const prismMD = createPlayPrismGeometry(3.05, 0.2, 0.068);
 
-    // Carefully composed constellation framing the hero with crisp diagonals
     const heroSpecs = [
-      { geo: triGeoLarge, pos: [-5.1, 2.75, -0.8], rot: [0.14, 0.22, Math.PI], scale: 1.08, speed: 0.42 },
-      { geo: triGeoMed, pos: [-0.95, 3.55, -1.6], rot: [-0.12, 0.28, 0.06], scale: 0.96, speed: 0.35 },
-      { geo: triGeoLarge, pos: [5.25, 2.85, -0.5], rot: [0.18, -0.26, 0.0], scale: 1.06, speed: 0.48 },
-      { geo: triGeoWide, pos: [-5.65, -0.75, 0.2], rot: [-0.15, 0.34, Math.PI * 0.5], scale: 0.92, speed: 0.38 },
-      { geo: triGeoLarge, pos: [1.35, -1.65, -0.45], rot: [0.22, -0.18, 0.03], scale: 0.94, speed: 0.52 },
-      { geo: triGeoMed, pos: [5.5, -1.05, 0.35], rot: [-0.18, -0.32, Math.PI * 0.5], scale: 1.04, speed: 0.44 },
-      { geo: triGeoMed, pos: [-2.75, -3.45, -1.1], rot: [0.25, 0.2, Math.PI], scale: 0.98, speed: 0.33 },
-      { geo: triGeoWide, pos: [4.8, -3.75, -0.9], rot: [-0.14, -0.24, Math.PI], scale: 0.88, speed: 0.4 },
+      { geo: prismXL, pos: [-5.35, 3.05, -0.4], rot: [0.06, 0.12, Math.PI * 0.5], scale: 1.08, dir: -1.1 },
+      { geo: prismLG, pos: [-0.75, 3.35, -0.9], rot: [-0.05, 0.14, -Math.PI * 0.5], scale: 1.02, dir: -0.6 },
+      { geo: prismXL, pos: [5.45, 3.15, -0.3], rot: [0.07, -0.14, Math.PI * 0.5], scale: 1.06, dir: 1.15 },
+      { geo: prismLG, pos: [-4.55, -0.55, -0.6], rot: [-0.06, 0.16, 0], scale: 0.96, dir: -1.25 },
+      { geo: prismXL, pos: [-0.85, -0.15, 0.45], rot: [0.08, -0.1, -Math.PI * 0.5], scale: 1.02, dir: -0.45 },
+      { geo: prismLG, pos: [1.55, -1.65, 0.65], rot: [-0.08, -0.14, Math.PI * 0.5], scale: 0.98, dir: 0.55 },
+      { geo: prismLG, pos: [4.65, -0.75, -0.4], rot: [0.05, -0.18, -Math.PI * 0.5], scale: 0.96, dir: 1.2 },
+      { geo: prismMD, pos: [-1.45, -4.15, -0.5], rot: [0.09, 0.1, -Math.PI * 0.5], scale: 1.04, dir: -0.8 },
+      { geo: prismXL, pos: [5.35, -4.35, -0.3], rot: [-0.06, -0.12, Math.PI * 0.5], scale: 1.05, dir: 1.0 },
     ];
 
-    const heroMeshes = heroSpecs.map((spec) => {
-      const mesh = new THREE.Mesh(spec.geo, heroMaterial);
-      mesh.position.set(...spec.pos);
-      mesh.rotation.set(...spec.rot);
-      mesh.scale.setScalar(spec.scale);
-      mesh.userData = {
-        basePos: new THREE.Vector3(...spec.pos),
-        baseRot: new THREE.Euler(...spec.rot),
-        speed: spec.speed,
+    const heroMeshes = heroSpecs.map((s) => {
+      const m = new THREE.Mesh(s.geo, heroMat);
+      m.position.set(...s.pos);
+      m.rotation.set(...s.rot);
+      m.scale.setScalar(s.scale);
+      m.userData = {
+        basePos: new THREE.Vector3(...s.pos),
+        baseRot: new THREE.Euler(...s.rot),
+        dir: s.dir,
       };
-      heroGroup.add(mesh);
-      return mesh;
+      heroGroup.add(m);
+      return m;
     });
 
-    // FOOTER GROUP: Cantilevered horizontal architectural glass prism slabs
+    // AMBIENT PAPER SCULPTURAL TRIANGLES (Subtle white-on-paper relief during middle chapters)
+    const ambientGroup = new THREE.Group();
+    ambientGroup.visible = false;
+    scene.add(ambientGroup);
+
+    const ambSpecs = [
+      { geo: prismXL, pos: [-5.8, 2.2, -1.5], rot: [0.22, 0.28, 0.4], scale: 1.35 },
+      { geo: prismXL, pos: [5.9, -1.8, -1.2], rot: [-0.18, -0.32, -0.6], scale: 1.42 },
+    ];
+    const ambMeshes = ambSpecs.map((s) => {
+      const m = new THREE.Mesh(s.geo, ambientMat);
+      m.position.set(...s.pos);
+      m.rotation.set(...s.rot);
+      m.scale.setScalar(s.scale);
+      m.userData = { basePos: new THREE.Vector3(...s.pos), baseRot: new THREE.Euler(...s.rot) };
+      ambientGroup.add(m);
+      return m;
+    });
+
+    // FOOTER CANTILEVERED GLASS BEAMS (Exact architectural beams of footer-1440.png!)
     const footerGroup = new THREE.Group();
     footerGroup.visible = false;
     scene.add(footerGroup);
 
-    const beamGeoLong = createBeveledBeamGeometry(11.4, 1.35, 0.14, 0.32, 0.085);
-    const beamGeoShort = createBeveledBeamGeometry(6.8, 1.05, 0.12, 0.28, 0.075);
+    const beamLong = createBeveledBeamGeometry(12.2, 1.38, 0.34, 0.085);
+    const beamShort = createBeveledBeamGeometry(7.2, 1.05, 0.28, 0.072);
 
     const footerSpecs = [
-      { geo: beamGeoLong, pos: [-2.6, 0.35, 0.2], rot: [0.24, 0.18, -0.06], scale: 1.0 },
-      { geo: beamGeoShort, pos: [4.8, 0.95, -0.9], rot: [-0.22, -0.28, 0.19], scale: 0.96 },
-      { geo: beamGeoLong, pos: [1.8, -1.55, -1.6], rot: [0.32, -0.14, 0.04], scale: 1.08 },
-      { geo: triGeoMed, pos: [-6.1, 2.25, -1.2], rot: [0.16, 0.3, -0.25], scale: 0.85 },
-      { geo: triGeoMed, pos: [6.4, -2.4, -0.7], rot: [-0.18, -0.28, 0.35], scale: 0.9 },
+      { geo: beamLong, pos: [-2.8, 0.55, 0.25], rot: [0.22, 0.16, -0.04], scale: 1.02 },
+      { geo: prismMD, pos: [-5.4, 1.65, -0.55], rot: [0.18, 0.32, -0.38], scale: 0.92 },
+      { geo: beamShort, pos: [5.2, -0.35, -0.75], rot: [-0.2, -0.26, 0.16], scale: 0.98 },
     ];
-
-    const footerMeshes = footerSpecs.map((spec) => {
-      const mesh = new THREE.Mesh(spec.geo, footerMaterial);
-      mesh.position.set(...spec.pos);
-      mesh.rotation.set(...spec.rot);
-      mesh.scale.setScalar(spec.scale);
-      mesh.userData = {
-        basePos: new THREE.Vector3(...spec.pos),
-        baseRot: new THREE.Euler(...spec.rot),
-      };
-      footerGroup.add(mesh);
-      return mesh;
+    const footerMeshes = footerSpecs.map((s) => {
+      const m = new THREE.Mesh(s.geo, footerMat);
+      m.position.set(...s.pos);
+      m.rotation.set(...s.rot);
+      m.scale.setScalar(s.scale);
+      m.userData = { basePos: new THREE.Vector3(...s.pos), baseRot: new THREE.Euler(...s.rot) };
+      footerGroup.add(m);
+      return m;
     });
 
     const pointerTarget = new THREE.Vector2(0, 0);
     const pointerCurrent = new THREE.Vector2(0, 0);
 
-    const handlePointerMove = (e) => {
+    const onPointerMove = (e) => {
       pointerTarget.x = (e.clientX / window.innerWidth) * 2 - 1;
       pointerTarget.y = -(e.clientY / window.innerHeight) * 2 + 1;
     };
 
-    const handleResize = () => {
+    const onResize = () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
       camera.aspect = w / h;
-      camera.position.z = w < 640 ? 18.2 : w < 1024 ? 15.6 : 13.5;
+      camera.position.z = w < 640 ? 18.8 : w < 1024 ? 16.0 : 14.0;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h, false);
     };
 
-    handleResize();
-    window.addEventListener('pointermove', handlePointerMove, { passive: true });
-    window.addEventListener('resize', handleResize, { passive: true });
+    onResize();
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    window.addEventListener('resize', onResize, { passive: true });
 
     const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let rafId = 0;
     const clock = new THREE.Clock();
+    let rafId = 0;
+    let lastBackdropKey = '';
 
     const renderFrame = () => {
       const dt = Math.min(clock.getDelta(), 0.05);
       const elapsed = clock.getElapsedTime();
       const reduced = reducedMotionQuery.matches;
-
-      // Determine visibility zone (Hero vs Middle vs Footer)
-      const heroEl = document.getElementById('hero-stage');
-      const footerEl = document.getElementById('footer');
       const vh = window.innerHeight || 900;
 
-      let heroVisibility = 0;
-      let heroScrollOffset = 0;
-      if (heroEl) {
-        const rect = heroEl.getBoundingClientRect();
-        if (rect.bottom > -80 && rect.top < vh) {
-          heroVisibility = THREE.MathUtils.clamp((rect.bottom + 80) / (vh * 0.85), 0, 1);
-          heroScrollOffset = THREE.MathUtils.clamp(-rect.top / vh, 0, 1.5);
-        }
+      const heroTrack = document.getElementById('hero-stage');
+      const footerEl = document.getElementById('footer');
+      const qualityEl = document.getElementById('standards');
+
+      let heroProg = 0;
+      let inHero = false;
+      if (heroTrack) {
+        const r = heroTrack.getBoundingClientRect();
+        const scrollable = Math.max(1, r.height - vh);
+        heroProg = THREE.MathUtils.clamp(-r.top / scrollable, 0, 1.15);
+        inHero = r.bottom > vh * 0.12 && r.top < vh;
       }
 
-      let footerVisibility = 0;
-      let footerScrollOffset = 0;
+      let footerVis = 0;
       if (footerEl) {
-        const rect = footerEl.getBoundingClientRect();
-        if (rect.top < vh + 120) {
-          footerVisibility = THREE.MathUtils.clamp((vh + 120 - rect.top) / (vh * 0.72), 0, 1);
-          footerScrollOffset = THREE.MathUtils.clamp((vh - rect.top) / (rect.height || vh), 0, 1.2);
+        const r = footerEl.getBoundingClientRect();
+        if (r.top < vh + 80) {
+          footerVis = THREE.MathUtils.clamp((vh + 80 - r.top) / (vh * 0.65), 0, 1);
         }
       }
 
-      const showFooter = footerVisibility > heroVisibility && footerVisibility > 0.02;
-      const layerOpacity = showFooter ? footerVisibility : heroVisibility;
-      canvas.style.opacity = layerOpacity.toFixed(3);
+      let inDarkQuality = false;
+      if (qualityEl) {
+        const r = qualityEl.getBoundingClientRect();
+        inDarkQuality = r.top < vh * 0.5 && r.bottom > vh * 0.5;
+      }
 
-      heroGroup.visible = !showFooter && heroVisibility > 0.01;
-      footerGroup.visible = showFooter;
-
-      // Smooth cue uniform transitions (Hero uses active Cue; Footer stays Signal Vermilion)
-      const activeHeroProfile = CUE_SHADER_PROFILES[cueRef.current] || CUE_SHADER_PROFILES.vermilion;
-      const lerpRate = reduced ? 1.0 : Math.min(1, dt * 6.5);
-
-      heroMaterial.uniforms.uGlassTint.value.lerp(activeHeroProfile.glassTint, lerpRate);
-      heroMaterial.uniforms.uShadowTint.value.lerp(activeHeroProfile.shadowTint, lerpRate);
-      heroMaterial.uniforms.uEdgeColor.value.lerp(activeHeroProfile.edgeColor, lerpRate);
-      heroMaterial.uniforms.uIceColor.value.lerp(activeHeroProfile.iceColor, lerpRate);
-      heroMaterial.uniforms.uOpacityScale.value = THREE.MathUtils.lerp(
-        heroMaterial.uniforms.uOpacityScale.value,
-        activeHeroProfile.opacityScale,
-        lerpRate
-      );
-      heroMaterial.uniforms.uSpecularBoost.value = THREE.MathUtils.lerp(
-        heroMaterial.uniforms.uSpecularBoost.value,
-        activeHeroProfile.specularBoost,
-        lerpRate
-      );
-      heroMaterial.uniforms.uAmbientLift.value = THREE.MathUtils.lerp(
-        heroMaterial.uniforms.uAmbientLift.value,
-        activeHeroProfile.ambientLift,
-        lerpRate
-      );
-
-      // Footer always reflects Signal Vermilion
-      const vermilionProfile = CUE_SHADER_PROFILES.vermilion;
-      footerMaterial.uniforms.uGlassTint.value.copy(vermilionProfile.glassTint);
-      footerMaterial.uniforms.uShadowTint.value.copy(vermilionProfile.shadowTint);
-      footerMaterial.uniforms.uEdgeColor.value.copy(vermilionProfile.edgeColor);
-      footerMaterial.uniforms.uIceColor.value.copy(vermilionProfile.iceColor);
-
-      // Pointer easing
       if (!reduced) {
         pointerCurrent.lerp(pointerTarget, Math.min(1, dt * 4.5));
       } else {
         pointerCurrent.set(0, 0);
       }
 
-      for (const mat of allMaterials) {
-        mat.uniforms.uTime.value = reduced ? 0 : elapsed;
-        mat.uniforms.uPointer.value.copy(pointerCurrent);
-      }
+      const activeProf = CUE_PROFILES[cueRef.current] || CUE_PROFILES.vermilion;
+      const lerpRate = reduced ? 1.0 : Math.min(1, dt * 6.5);
 
-      if (heroGroup.visible) {
-        heroGroup.rotation.y = pointerCurrent.x * 0.08;
-        heroGroup.rotation.x = -pointerCurrent.y * 0.06;
+      heroMat.uniforms.uGlassTint.value.lerp(activeProf.glassTint, lerpRate);
+      heroMat.uniforms.uShadowTint.value.lerp(activeProf.shadowTint, lerpRate);
+      heroMat.uniforms.uEdgeColor.value.lerp(activeProf.edgeColor, lerpRate);
+      heroMat.uniforms.uIceColor.value.lerp(activeProf.iceColor, lerpRate);
+      heroMat.uniforms.uPointer.value.copy(pointerCurrent);
+      ambientMat.uniforms.uPointer.value.copy(pointerCurrent);
+      footerMat.uniforms.uPointer.value.copy(pointerCurrent);
 
-        heroMeshes.forEach((mesh, idx) => {
-          const { basePos, baseRot, speed } = mesh.userData;
-          const phase = elapsed * speed + idx * 1.15;
-          const floatY = reduced ? 0 : Math.sin(phase) * 0.16;
-          const floatRot = reduced ? 0 : Math.cos(phase * 0.8) * 0.045;
-          const scrollSpread = heroScrollOffset * (idx % 2 === 0 ? 1.45 : -1.25);
+      const vermProf = CUE_PROFILES.vermilion;
+      footerMat.uniforms.uGlassTint.value.copy(vermProf.glassTint);
+      footerMat.uniforms.uShadowTint.value.copy(vermProf.shadowTint);
+      footerMat.uniforms.uEdgeColor.value.copy(vermProf.edgeColor);
+      footerMat.uniforms.uIceColor.value.copy(vermProf.iceColor);
 
-          mesh.position.x = basePos.x + scrollSpread * 0.55;
-          mesh.position.y = basePos.y + floatY + heroScrollOffset * 1.65;
-          mesh.rotation.x = baseRot.x + floatRot + heroScrollOffset * 0.18;
-          mesh.rotation.y = baseRot.y + floatRot * 1.2 + pointerCurrent.x * 0.12;
-          mesh.rotation.z = baseRot.z + (reduced ? 0 : Math.sin(phase * 0.5) * 0.03);
+      if (inHero && footerVis < 0.2) {
+        // Foreground refractive mode in Hero!
+        canvas.style.zIndex = '6';
+        const fadeEnd = 1 - THREE.MathUtils.clamp((heroProg - 0.54) / 0.16, 0, 1);
+        canvas.style.opacity = fadeEnd.toFixed(3);
+
+        heroGroup.visible = fadeEnd > 0.01;
+        ambientGroup.visible = false;
+        footerGroup.visible = false;
+
+        const paperMix = THREE.MathUtils.clamp((heroProg - 0.22) / 0.42, 0, 1);
+        heroMat.uniforms.uPaperMix.value = paperMix;
+
+        const backdropKey = `${cueRef.current}-${langRef.current}-${Math.round(heroProg * 250)}`;
+        if (backdropKey !== lastBackdropKey) {
+          lastBackdropKey = backdropKey;
+          const copy = UI_COPY[langRef.current] || UI_COPY.en;
+          drawBackdrop(heroProg, activeProf, copy);
+        }
+
+        heroGroup.rotation.y = pointerCurrent.x * 0.06;
+        heroGroup.rotation.x = -pointerCurrent.y * 0.05;
+
+        const partPhase = THREE.MathUtils.clamp((heroProg - 0.42) / 0.48, 0, 1);
+        const isMobile = window.innerWidth < 768;
+
+        heroMeshes.forEach((m, idx) => {
+          const { basePos, baseRot, dir } = m.userData;
+          const drift = reduced ? 0 : Math.sin(elapsed * 0.55 + idx * 0.9) * 0.11;
+          const mobileSpread = isMobile ? dir * 1.65 : 0;
+          m.position.x = basePos.x + mobileSpread + dir * partPhase * 5.2 + heroProg * dir * 0.65;
+          m.position.y = basePos.y + drift + heroProg * (idx % 2 === 0 ? 1.15 : -0.75);
+          m.rotation.x = baseRot.x + heroProg * 0.42 + (reduced ? 0 : Math.cos(elapsed * 0.45 + idx) * 0.03);
+          m.rotation.y = baseRot.y + heroProg * dir * 0.48 + pointerCurrent.x * 0.09;
+          m.rotation.z = baseRot.z + partPhase * dir * 0.35;
         });
-      }
+      } else if (footerVis > 0.04) {
+        canvas.style.zIndex = '4';
+        canvas.style.opacity = footerVis.toFixed(3);
+        heroGroup.visible = false;
+        ambientGroup.visible = false;
+        footerGroup.visible = true;
 
-      if (footerGroup.visible) {
-        footerGroup.rotation.y = pointerCurrent.x * 0.06;
-        footerGroup.rotation.x = -pointerCurrent.y * 0.04;
-
-        footerMeshes.forEach((mesh, idx) => {
-          const { basePos, baseRot } = mesh.userData;
-          const drift = reduced ? 0 : Math.sin(elapsed * 0.55 + idx * 1.4) * 0.14;
-          mesh.position.x = basePos.x + (idx % 2 === 0 ? 1 : -1) * (1 - footerScrollOffset) * 0.45;
-          mesh.position.y = basePos.y + drift;
-          mesh.rotation.x = baseRot.x + (reduced ? 0 : Math.cos(elapsed * 0.4 + idx) * 0.035);
-          mesh.rotation.y = baseRot.y + pointerCurrent.x * 0.1;
+        footerGroup.rotation.y = pointerCurrent.x * 0.05;
+        footerMeshes.forEach((m, idx) => {
+          const { basePos, baseRot } = m.userData;
+          m.position.y = basePos.y + (reduced ? 0 : Math.sin(elapsed * 0.5 + idx * 1.3) * 0.12);
+          m.rotation.y = baseRot.y + pointerCurrent.x * 0.08;
         });
+      } else if (!inDarkQuality) {
+        // Subtle background sculptural triangles on studio paper chapters
+        canvas.style.zIndex = '1';
+        canvas.style.opacity = '0.65';
+        heroGroup.visible = false;
+        ambientGroup.visible = true;
+        footerGroup.visible = false;
+
+        const scrollNorm = (window.scrollY || 0) * 0.0004;
+        ambMeshes.forEach((m, idx) => {
+          const { basePos, baseRot } = m.userData;
+          m.position.y = basePos.y + Math.sin(scrollNorm + idx * 2.1) * 0.9;
+          m.rotation.z = baseRot.z + scrollNorm * (idx === 0 ? 0.35 : -0.35);
+          m.rotation.y = baseRot.y + pointerCurrent.x * 0.06;
+        });
+      } else {
+        canvas.style.opacity = '0';
+        heroGroup.visible = false;
+        ambientGroup.visible = false;
+        footerGroup.visible = false;
       }
 
-      if (layerOpacity > 0.01) {
+      if (heroGroup.visible || ambientGroup.visible || footerGroup.visible) {
         renderer.render(scene, camera);
       }
 
@@ -444,15 +547,17 @@ export default function FresnelStageCanvas({ activeCueId }) {
 
     return () => {
       window.cancelAnimationFrame(rafId);
-      window.removeEventListener('pointermove', handlePointerMove);
-      window.removeEventListener('resize', handleResize);
-      triGeoLarge.dispose();
-      triGeoMed.dispose();
-      triGeoWide.dispose();
-      beamGeoLong.dispose();
-      beamGeoShort.dispose();
-      heroMaterial.dispose();
-      footerMaterial.dispose();
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('resize', onResize);
+      prismXL.dispose();
+      prismLG.dispose();
+      prismMD.dispose();
+      beamLong.dispose();
+      beamShort.dispose();
+      backdropTex.dispose();
+      heroMat.dispose();
+      ambientMat.dispose();
+      footerMat.dispose();
       renderer.dispose();
     };
   }, []);

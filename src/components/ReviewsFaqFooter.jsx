@@ -1,57 +1,57 @@
 import { useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight, Minus, Plus } from 'lucide-react';
+import { ChevronDown, ChevronLeft, ChevronRight, Minus, Plus } from 'lucide-react';
 import {
   CLIENT_REVIEWS,
   DISCIPLINES,
   FAQ_ITEMS,
+  STAGE_WORKS,
   STUDIO_LOCATIONS,
+  UI_COPY,
 } from '../data/sorotData';
 
-export default function ReviewsFaqFooter({ onOpenBrief }) {
+export default function ReviewsFaqFooter({ lang = 'en', onChangeLang, onOpenBrief }) {
   const carouselRef = useRef(null);
-  const [openFaqId, setOpenFaqId] = useState(FAQ_ITEMS[0].id);
+  const [openFaqId, setOpenFaqId] = useState(null);
+  const [showAllFaq, setShowAllFaq] = useState(false);
+
+  const copy = UI_COPY[lang] || UI_COPY.en;
+  const visibleFaqs = showAllFaq ? FAQ_ITEMS : FAQ_ITEMS.slice(0, 6);
 
   const scrollCarousel = (direction) => {
     const el = carouselRef.current;
     if (!el) return;
-    const step = Math.min(el.clientWidth * 0.82, 420);
+    const step = Math.min(el.clientWidth * 0.78, 380);
     el.scrollBy({ left: direction * step, behavior: 'smooth' });
   };
 
   return (
     <>
       <div className="chapter-solid-light section-light" data-chapter-polarity="light">
-        {/* Director Reviews Horizontal Carousel */}
+        {/* ACT 11A: DIRECTOR REVIEWS HORIZONTAL TONAL GLASS CAROUSEL (low-1440.png twin!) */}
         <section id="reviews" className="reviews-section">
           <div className="container">
             <div className="reviews-head">
-              <div>
-                <span className="eyebrow section-head__eyebrow">
-                  <span className="eyebrow-dot" />
-                  SHOW DIRECTOR PERSPECTIVES
-                </span>
-                <h2 className="display-section reviews-head__title">
-                  <span>TRUSTED ON</span>
-                  <span className="text-vermilion">LIVE CUE.</span>
-                </h2>
-              </div>
+              <h2 className="display-section reviews-head__title">
+                <span>{copy.reviewsTop}</span>
+                <span className="text-vermilion">{copy.reviewsAccent}</span>
+              </h2>
 
               <div className="reviews-controls">
                 <button
                   type="button"
                   className="reviews-nav-btn"
-                  aria-label="Scroll reviews left"
+                  aria-label="Previous review slide"
                   onClick={() => scrollCarousel(-1)}
                 >
-                  <ChevronLeft size={20} aria-hidden="true" />
+                  <ChevronLeft size={18} aria-hidden="true" />
                 </button>
                 <button
                   type="button"
                   className="reviews-nav-btn"
-                  aria-label="Scroll reviews right"
+                  aria-label="Next review slide"
                   onClick={() => scrollCarousel(1)}
                 >
-                  <ChevronRight size={20} aria-hidden="true" />
+                  <ChevronRight size={18} aria-hidden="true" />
                 </button>
               </div>
             </div>
@@ -60,44 +60,44 @@ export default function ReviewsFaqFooter({ onOpenBrief }) {
               ref={carouselRef}
               className="reviews-track"
               tabIndex={0}
-              aria-label="Client reviews carousel"
+              aria-label="Show director reviews"
             >
               {CLIENT_REVIEWS.map((review) => (
                 <article key={review.id} className="review-card">
-                  <div className="review-card__author">
-                    <span className="review-card__monogram mono-meta" aria-hidden="true">
-                      {review.initials}
+                  <header className="review-card__author">
+                    <span
+                      className="review-card__badge"
+                      style={{ backgroundColor: review.badgeBg }}
+                      aria-hidden="true"
+                    >
+                      {review.badge}
                     </span>
                     <div>
-                      <strong className="review-card__name">{review.name}</strong>
-                      <div className="review-card__role">{review.role}</div>
+                      <h3 className="review-card__name">{review.name}</h3>
+                      <p className="review-card__role">{review.role}</p>
                     </div>
-                  </div>
+                  </header>
 
                   <blockquote className="review-card__quote">“{review.quote}”</blockquote>
-
-                  <div className="review-card__project mono-meta">{review.project}</div>
                 </article>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Narrow Editorial FAQ Accordion (Font-Inherited) */}
+        {/* ACT 11B: NARROW 760PX EDITORIAL FAQ ACCORDION (s11-faq.jpg twin!) */}
         <section id="faq" className="faq-section">
           <div className="container faq-container">
             <div className="faq-head">
-              <span className="eyebrow section-head__eyebrow">
-                <span className="eyebrow-dot" />
-                PRODUCTION SPECIFICATION FAQ
-              </span>
+              <span className="faq-eyebrow">{copy.faqEyebrow}</span>
               <h2 className="display-section faq-head__title">
-                TECHNICAL <span className="text-vermilion">ANSWERS.</span>
+                <span>{copy.faqTop}</span>
+                <span className="text-vermilion">{copy.faqAccent}</span>
               </h2>
             </div>
 
             <div className="faq-list">
-              {FAQ_ITEMS.map((item) => {
+              {visibleFaqs.map((item) => {
                 const isOpen = openFaqId === item.id;
                 return (
                   <div
@@ -113,30 +113,49 @@ export default function ReviewsFaqFooter({ onOpenBrief }) {
                         onClick={() => setOpenFaqId(isOpen ? null : item.id)}
                         data-faq-btn={item.id}
                       >
-                        <span className="faq-item__question">{item.question}</span>
+                        <span className="faq-item__question">
+                          {lang === 'id' ? item.questionId : item.question}
+                        </span>
                         <span className="faq-item__icon" aria-hidden="true">
-                          {isOpen ? <Minus size={18} /> : <Plus size={18} />}
+                          {isOpen ? <Minus size={16} /> : <Plus size={16} />}
                         </span>
                       </button>
                     </h3>
                     {isOpen && (
-                      <div
-                        id={`panel-${item.id}`}
-                        className="faq-item__panel"
-                        role="region"
-                      >
-                        <p>{item.answer}</p>
+                      <div id={`panel-${item.id}`} className="faq-item__panel" role="region">
+                        <p>{lang === 'id' ? item.answerId : item.answer}</p>
                       </div>
                     )}
                   </div>
                 );
               })}
             </div>
+
+            <div className="faq-more-wrap">
+              <button
+                type="button"
+                className="split-pill split-pill--tonal"
+                onClick={() => setShowAllFaq((prev) => !prev)}
+              >
+                <span className="split-pill__icon" aria-hidden="true">
+                  <ChevronDown
+                    size={17}
+                    style={{
+                      transform: showAllFaq ? 'rotate(180deg)' : 'none',
+                      transition: 'transform 220ms ease',
+                    }}
+                  />
+                </span>
+                <span className="split-pill__label">
+                  {showAllFaq ? copy.faqLess : copy.faqMore}
+                </span>
+              </button>
+            </div>
           </div>
         </section>
       </div>
 
-      {/* Closing Monolith Signal Vermilion CTA & High-Contrast Frosted Glass Footer */}
+      {/* ACT 12: SIGNAL VERMILION MONOLITH CTA + CANTILEVERED 3D GLASS + FROSTED FOOTER SHEET (footer-1440.png twin!) */}
       <footer
         id="footer"
         className="chapter-footer monolith-footer"
@@ -144,13 +163,12 @@ export default function ReviewsFaqFooter({ onOpenBrief }) {
       >
         <div className="container monolith-footer__inner">
           <div className="monolith-footer__cta">
-            <span className="eyebrow monolith-footer__eyebrow">
-              <span className="eyebrow-dot" />
-              2026 / 2027 BOOKING WINDOW OPEN
-            </span>
             <h2 className="display-monumental monolith-footer__headline">
-              <span className="monolith-footer__line-light">READY TO SHAPE</span>
-              <span className="monolith-footer__line-dark">YOUR NEXT STAGE?</span>
+              <span className="monolith-footer__line-light">{copy.footerTop}</span>
+              <span className="monolith-footer__line-mixed">
+                <span className="monolith-footer__line-light">{copy.footerBotWhite}</span>
+                <span className="monolith-footer__line-dark">{copy.footerBotDark}</span>
+              </span>
             </h2>
 
             <button
@@ -159,84 +177,127 @@ export default function ReviewsFaqFooter({ onOpenBrief }) {
               onClick={onOpenBrief}
             >
               <span className="split-pill__icon" aria-hidden="true">
-                <ChevronRight size={20} strokeWidth={2.4} />
+                <ChevronRight size={19} strokeWidth={2.3} />
               </span>
-              <span className="split-pill__label">Start a Cue Brief</span>
+              <span className="split-pill__label">{copy.footerCta}</span>
             </button>
           </div>
 
-          {/* High-Contrast Calibrated Frosted Glass Footer Card */}
           <div className="glass-footer-card">
             <div className="glass-footer-card__grid">
               <div className="glass-footer-card__brand">
                 <a href="#hero-stage" className="glass-footer-card__wordmark">
-                  SOROT®
+                  <span>sorot</span>
+                  <span>scenics®</span>
                 </a>
-                <p className="glass-footer-card__tagline">
-                  Kinetic stage scenography, beveled Fresnel optics, and live broadcast direction
-                  engineered to the millisecond.
+
+                <div className="footer-lang-switch" role="group" aria-label="Footer language switch">
+                  <button
+                    type="button"
+                    className={`footer-lang-pill ${lang === 'en' ? 'is-active' : ''}`}
+                    onClick={() => onChangeLang?.('en')}
+                  >
+                    EN
+                  </button>
+                  <button
+                    type="button"
+                    className={`footer-lang-pill ${lang === 'id' ? 'is-active' : ''}`}
+                    onClick={() => onChangeLang?.('id')}
+                  >
+                    ID
+                  </button>
+                </div>
+
+                <p className="glass-footer-card__cities">
+                  {STUDIO_LOCATIONS.join(', ')}
                 </p>
-                <div className="glass-footer-card__certs">
-                  <span className="glass-footer-card__cert-badge mono-meta">TUV BGV-C1</span>
-                  <span className="glass-footer-card__cert-badge mono-meta">SMPTE 12M</span>
-                  <span className="glass-footer-card__cert-badge mono-meta">ECO-LED</span>
+
+                <div className="glass-footer-card__emblems">
+                  <span className="footer-emblem">
+                    <strong>TUV</strong>
+                    <small>BGV-C1:2026</small>
+                  </span>
+                  <span className="footer-emblem">
+                    <strong>MA3</strong>
+                    <small>SMPTE Fiber</small>
+                  </span>
+                  <span className="footer-emblem">
+                    <strong>5.0 ★</strong>
+                    <small>Show Rating</small>
+                  </span>
                 </div>
               </div>
 
               <div className="glass-footer-card__col">
-                <h3 className="mono-meta glass-footer-card__col-title">EXPLORE</h3>
-                <ul className="glass-footer-card__links">
+                <h3 className="glass-footer-card__col-title">EXPLORE</h3>
+                <ul className="glass-footer-card__links glass-footer-card__links--large">
                   <li>
-                    <a href="#hero-stage">Stage Optics</a>
+                    <a href="#hero-stage">Home</a>
                   </li>
                   <li>
-                    <a href="#works">Selected Works</a>
+                    <a href="#works">Productions</a>
                   </li>
                   <li>
-                    <a href="#method">Telemetry Proof</a>
+                    <a href="#spotlight">About Studio</a>
                   </li>
                   <li>
-                    <a href="#standards">Live Standards</a>
+                    <a href="#method">Our Method</a>
                   </li>
                   <li>
-                    <a href="#reviews">Director Reviews</a>
+                    <a href="#resources">Field Notes</a>
                   </li>
                   <li>
-                    <a href="#faq">Spec FAQ</a>
+                    <a href="#footer">Contact</a>
                   </li>
                 </ul>
               </div>
 
               <div className="glass-footer-card__col">
-                <h3 className="mono-meta glass-footer-card__col-title">DISCIPLINES</h3>
+                <h3 className="glass-footer-card__col-title">DISCIPLINES</h3>
                 <ul className="glass-footer-card__links">
                   {DISCIPLINES.map((d) => (
                     <li key={d.id}>
-                      <a href="#disciplines">{d.title}</a>
+                      <a href="#disciplines">{lang === 'id' ? d.titleId : d.title}</a>
+                    </li>
+                  ))}
+                  <li>
+                    <a href="#vr-portal">3D Pre-Vis Twin</a>
+                  </li>
+                  <li>
+                    <a href="#standards">Safety Engineering</a>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="glass-footer-card__col">
+                <h3 className="glass-footer-card__col-title">STAGE FORMATS</h3>
+                <ul className="glass-footer-card__links">
+                  {STAGE_WORKS.slice(0, 7).map((w) => (
+                    <li key={w.id}>
+                      <a href="#works">{w.tag} Scenography</a>
                     </li>
                   ))}
                 </ul>
               </div>
-
-              <div className="glass-footer-card__col">
-                <h3 className="mono-meta glass-footer-card__col-title">LOCATIONS</h3>
-                <p className="glass-footer-card__cities">
-                  {STUDIO_LOCATIONS.join(' · ')}
-                </p>
-                <div className="glass-footer-card__contact">
-                  <a href="mailto:cuesheet@sorot.studio">cuesheet@sorot.studio</a>
-                  <span className="mono-meta">+62 21 5098 4410 · JKT HUB</span>
-                </div>
-              </div>
             </div>
 
             <div className="glass-footer-card__bottom">
-              <span className="mono-meta">© 2026 SOROT SCENICS STUDIO</span>
+              <span>©2026 SOROT Scenics Studio</span>
+
+              <div className="glass-footer-card__socials">
+                <a href="#footer" aria-label="SOROT LinkedIn">
+                  in
+                </a>
+                <a href="#footer" aria-label="SOROT Showreel">
+                  ▶
+                </a>
+              </div>
+
               <div className="glass-footer-card__legal">
-                <a href="#standards">Safety & Rigging Compliance</a>
-                <a href="#faq">Production Terms</a>
+                <a href="#standards">Rigging Safety</a>
+                <a href="#faq">Confidentiality</a>
                 <button type="button" className="glass-footer-card__text-btn" onClick={onOpenBrief}>
-                  Book Pre-Vis Session
+                  Cue Sheet Brief
                 </button>
               </div>
             </div>

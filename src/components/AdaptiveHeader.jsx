@@ -1,27 +1,30 @@
 import { useEffect, useRef } from 'react';
-import { ArrowUpRight, X } from 'lucide-react';
-import { STAGE_WORKS, STUDIO_LOCATIONS } from '../data/sorotData';
+import { ChevronRight, X } from 'lucide-react';
+import { DISCIPLINES, STUDIO_LOCATIONS, UI_COPY } from '../data/sorotData';
 import './AdaptiveHeader.css';
 
-const NAV_ROUTES = [
-  { href: '#hero-stage', label: 'STAGE OPTICS', meta: '00' },
-  { href: '#works', label: 'SELECTED WORKS', meta: '01' },
-  { href: '#method', label: 'PRODUCTION PROOF', meta: '02' },
-  { href: '#disciplines', label: 'DISCIPLINES', meta: '03' },
-  { href: '#standards', label: 'LIVE STANDARDS', meta: '04' },
-  { href: '#reviews', label: 'DIRECTOR REVIEWS', meta: '05' },
-  { href: '#faq', label: 'SPEC FAQ', meta: '06' },
+const PRIMARY_NAV = [
+  { href: '#hero-stage', en: 'Home', id: 'Beranda' },
+  { href: '#works', en: 'Productions', id: 'Produksi' },
+  { href: '#spotlight', en: 'About Studio', id: 'Tentang Studio' },
+  { href: '#method', en: 'Our Method', id: 'Metode Kami' },
+  { href: '#resources', en: 'Field Notes', id: 'Catatan Riset' },
+  { href: '#standards', en: 'Live Standards', id: 'Standar Live' },
+  { href: '#footer', en: 'Contact', id: 'Kontak' },
 ];
 
 export default function AdaptiveHeader({
   polarity,
   isScrolled,
+  lang = 'en',
+  onChangeLang,
   menuOpen,
   onToggleMenu,
   onCloseMenu,
   onOpenBrief,
 }) {
   const closeBtnRef = useRef(null);
+  const copy = UI_COPY[lang] || UI_COPY.en;
 
   useEffect(() => {
     if (!menuOpen) return undefined;
@@ -38,8 +41,6 @@ export default function AdaptiveHeader({
     };
   }, [menuOpen, onCloseMenu]);
 
-  const spotlightWorks = STAGE_WORKS.slice(0, 3);
-
   return (
     <>
       <header
@@ -51,12 +52,21 @@ export default function AdaptiveHeader({
           <a
             href="#hero-stage"
             className="adaptive-header__brand"
-            aria-label="SOROT Home"
+            aria-label="SOROT Scenics Home"
             onClick={onCloseMenu}
           >
-            <span className="adaptive-header__brand-mark">SOROT</span>
-            <span className="adaptive-header__brand-reg" aria-hidden="true">
-              ®
+            <span className="adaptive-header__brand-stack">
+              <span className="adaptive-header__brand-top">
+                sor
+                <span className="adaptive-header__prism-o">
+                  o
+                  <svg viewBox="0 0 10 10" width="7" height="7" aria-hidden="true" data-art="logo">
+                    <polygon points="0,0 10,5 0,10" fill="currentColor" />
+                  </svg>
+                </span>
+                t
+              </span>
+              <span className="adaptive-header__brand-bot">scenics®</span>
             </span>
           </a>
 
@@ -72,7 +82,7 @@ export default function AdaptiveHeader({
               <span />
               <span />
             </span>
-            <span>{menuOpen ? 'Close' : 'Menu'}</span>
+            <span>{menuOpen ? copy.closeBtn : copy.menuBtn}</span>
           </button>
 
           <button
@@ -80,7 +90,7 @@ export default function AdaptiveHeader({
             className="adaptive-header__cta-pill"
             onClick={onOpenBrief}
           >
-            Book Production
+            {copy.ctaTop}
           </button>
         </div>
       </header>
@@ -94,93 +104,137 @@ export default function AdaptiveHeader({
           aria-label="SOROT Primary Navigation"
         >
           <div className="bento-menu__backdrop" onClick={onCloseMenu} />
+
+          {/* Floating White Rounded Bento Menu Sheet (Exact menu-1440.png architecture!) */}
           <div className="bento-menu__sheet">
             <div className="bento-menu__topbar">
-              <div className="bento-menu__identity">
-                <span className="adaptive-header__brand-mark">SOROT®</span>
-                <span className="mono-meta bento-menu__sub">
-                  KINETIC SCENOGRAPHY · LIVE BROADCAST OPTICS
-                </span>
+              <span className="bento-menu__brand-label">sorot scenics®</span>
+
+              <div className="bento-menu__topbar-actions">
+                <div className="bento-menu__lang-switch" role="group" aria-label="Language switch">
+                  <button
+                    type="button"
+                    className={`bento-menu__lang-btn ${lang === 'en' ? 'is-active' : ''}`}
+                    onClick={() => onChangeLang?.('en')}
+                  >
+                    EN
+                  </button>
+                  <button
+                    type="button"
+                    className={`bento-menu__lang-btn ${lang === 'id' ? 'is-active' : ''}`}
+                    onClick={() => onChangeLang?.('id')}
+                  >
+                    ID
+                  </button>
+                </div>
+
+                <button
+                  ref={closeBtnRef}
+                  type="button"
+                  className="bento-menu__close"
+                  onClick={onCloseMenu}
+                  aria-label="Close navigation menu"
+                >
+                  <X size={16} aria-hidden="true" />
+                  <span>{copy.closeBtn}</span>
+                </button>
               </div>
-              <button
-                ref={closeBtnRef}
-                type="button"
-                className="bento-menu__close"
-                onClick={onCloseMenu}
-                aria-label="Close navigation menu"
-              >
-                <X size={18} aria-hidden="true" />
-                <span>Close</span>
-              </button>
             </div>
 
-            <div className="bento-menu__grid">
-              <nav className="bento-menu__nav" aria-label="Site chapters">
-                <span className="eyebrow bento-menu__eyebrow">
-                  <span className="eyebrow-dot" />
-                  DIRECTORY
-                </span>
-                <ul className="bento-menu__list">
-                  {NAV_ROUTES.map((route) => (
-                    <li key={route.href}>
-                      <a
-                        href={route.href}
-                        className="bento-menu__link"
-                        onClick={onCloseMenu}
-                      >
-                        <span className="mono-meta bento-menu__index">{route.meta}</span>
-                        <span className="display-section bento-menu__label">
-                          {route.label}
-                        </span>
-                        <ArrowUpRight size={22} className="bento-menu__arrow" aria-hidden="true" />
+            <div className="bento-menu__columns">
+              {/* Col 1: Primary Navigation */}
+              <nav className="bento-menu__col" aria-label="Site chapters">
+                <span className="bento-menu__eyebrow">EXPLORE</span>
+                <ul className="bento-menu__primary-list">
+                  {PRIMARY_NAV.map((item) => (
+                    <li key={item.href}>
+                      <a href={item.href} onClick={onCloseMenu}>
+                        {lang === 'id' ? item.id : item.en}
                       </a>
                     </li>
                   ))}
                 </ul>
-
-                <div className="bento-menu__footer-bar">
-                  <div className="mono-meta bento-menu__cities">
-                    {STUDIO_LOCATIONS.join(' · ')}
-                  </div>
-                  <button
-                    type="button"
-                    className="bento-menu__brief-btn"
-                    onClick={() => {
-                      onCloseMenu();
-                      onOpenBrief();
-                    }}
-                  >
-                    Request Cue Sheet
-                  </button>
-                </div>
+                <p className="bento-menu__cities">{STUDIO_LOCATIONS.join(', ')}</p>
               </nav>
 
-              <div className="bento-menu__spotlights">
-                <span className="eyebrow bento-menu__eyebrow">
-                  <span className="eyebrow-dot" />
-                  LIVE RIG SPOTLIGHTS
-                </span>
-                <div className="bento-menu__cards">
-                  {spotlightWorks.map((work, i) => (
-                    <a
-                      key={work.id}
-                      href="#works"
-                      className={`bento-menu__card ${i === 0 ? 'bento-menu__card--lead' : ''}`}
-                      onClick={onCloseMenu}
-                    >
-                      <img src={work.image} alt={work.alt} loading="lazy" />
-                      <div className="bento-menu__card-scrim" />
-                      <div className="bento-menu__card-content">
-                        <span className="mono-meta bento-menu__card-tag">
-                          {work.dmx} · {work.lumens}
-                        </span>
-                        <strong className="display-section bento-menu__card-title">
-                          {work.title}
-                        </strong>
-                      </div>
-                    </a>
+              {/* Col 2: Disciplines */}
+              <div className="bento-menu__col">
+                <span className="bento-menu__eyebrow">{copy.expertisesEyebrow}</span>
+                <ul className="bento-menu__sub-list">
+                  {DISCIPLINES.map((d) => (
+                    <li key={d.id}>
+                      <a href="#disciplines" onClick={onCloseMenu}>
+                        {lang === 'id' ? d.titleId : d.title}
+                      </a>
+                    </li>
                   ))}
-                </div>
+                </ul>
+                <button
+                  type="button"
+                  className="bento-menu__quote-btn"
+                  onClick={() => {
+                    onCloseMenu();
+                    onOpenBrief();
+                  }}
+                >
+                  {copy.ctaTop}
+                </button>
+              </div>
+
+              {/* Col 3: 2x2 Bento Visual Widgets (Exact menu-1440.png widget structure!) */}
+              <div className="bento-menu__widgets">
+                <a
+                  href="#vr-portal"
+                  className="bento-widget bento-widget--wide"
+                  onClick={onCloseMenu}
+                >
+                  <img
+                    src="./media/foh-grandma.jpg"
+                    alt="Interactive 3D DMX pre-visualization console"
+                    loading="lazy"
+                  />
+                  <div className="bento-widget__scrim" />
+                  <div className="bento-widget__center">
+                    <strong className="display-section bento-widget__hero-title">
+                      INTERACTIVE 3D PRE-VIS
+                    </strong>
+                    <span className="bento-widget__discover-pill">
+                      <span className="bento-widget__discover-dot">
+                        <ChevronRight size={14} />
+                      </span>
+                      <span>Discover</span>
+                    </span>
+                  </div>
+                </a>
+
+                <a
+                  href="#resources"
+                  className="bento-widget bento-widget--paper"
+                  onClick={onCloseMenu}
+                >
+                  <span className="bento-widget__tag">White Paper</span>
+                  <strong className="display-section bento-widget__paper-title">
+                    25KHZ BROADCAST OPTICS GUIDE
+                  </strong>
+                  <span className="bento-widget__meta">Read dossier →</span>
+                </a>
+
+                <a
+                  href="#works"
+                  className="bento-widget bento-widget--dark"
+                  onClick={onCloseMenu}
+                >
+                  <img
+                    src="./media/concert-crowd.jpg"
+                    alt="Istora Symphony Arena stage production"
+                    loading="lazy"
+                  />
+                  <div className="bento-widget__scrim" />
+                  <span className="bento-widget__tag bento-widget__tag--light">Case Study</span>
+                  <strong className="display-section bento-widget__dark-title">
+                    ISTORA 16T ARENA RIG
+                  </strong>
+                </a>
               </div>
             </div>
           </div>

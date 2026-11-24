@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import Lenis from 'lenis';
 import { LIGHTING_CUES } from './data/sorotData';
+import PrismLoader from './components/PrismLoader';
 import FresnelStageCanvas from './components/FresnelStageCanvas';
 import AdaptiveHeader from './components/AdaptiveHeader';
 import LiveCueWidget from './components/LiveCueWidget';
@@ -11,6 +13,7 @@ import BriefModal from './components/BriefModal';
 
 export default function App() {
   const [activeCueId, setActiveCueId] = useState(LIGHTING_CUES[0].id);
+  const [lang, setLang] = useState('en');
   const [headerPolarity, setHeaderPolarity] = useState('vermilion');
   const [isScrolled, setIsScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -18,29 +21,62 @@ export default function App() {
 
   const activeCue = LIGHTING_CUES.find((c) => c.id === activeCueId) || LIGHTING_CUES[0];
 
-  // Live mutate Hero CSS custom properties when cue switches
+  // Lenis smooth inertia scroll matching laboiteaslides.fr feel
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+
+    const lenis = new Lenis({
+      lerp: 0.1,
+      smoothWheel: true,
+      wheelMultiplier: 0.95,
+    });
+
+    let rafId = 0;
+    const raf = (time) => {
+      lenis.raf(time);
+      rafId = window.requestAnimationFrame(raf);
+    };
+    rafId = window.requestAnimationFrame(raf);
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      lenis.destroy();
+    };
+  }, []);
+
+  // Mutate Hero CSS custom properties live when active cue switches
   useEffect(() => {
     const root = document.documentElement;
     root.style.setProperty('--hero-bg', activeCue.heroBg);
     root.style.setProperty('--hero-ink', activeCue.heroInk);
     root.style.setProperty('--hero-secondary-ink', activeCue.heroSecondaryInk);
 
-    // If user is currently at the top Hero chapter, sync header polarity immediately
-    if (window.scrollY < window.innerHeight * 0.65) {
+    if (window.scrollY < window.innerHeight * 0.45) {
       setHeaderPolarity(activeCue.polarity);
     }
   }, [activeCue]);
 
-  // IntersectionObserver multi-chapter header polarity tracking + scroll backdrop detection
+  // Multi-chapter header polarity tracking (including rising white arch inside Hero!)
   useEffect(() => {
-    const chapters = Array.from(document.querySelectorAll('[data-chapter-polarity]'));
-
     const computePolarity = () => {
       const y = window.scrollY;
+      const vh = window.innerHeight || 900;
       setIsScrolled(y > 36);
 
+      const heroEl = document.getElementById('hero-stage');
+      if (heroEl) {
+        const hr = heroEl.getBoundingClientRect();
+        if (hr.bottom > 80) {
+          const heroProg = Math.max(0, -hr.top / Math.max(1, hr.height - vh));
+          setHeaderPolarity(heroProg > 0.48 ? 'light' : activeCue.polarity);
+          return;
+        }
+      }
+
+      const chapters = Array.from(document.querySelectorAll('[data-chapter-polarity]'));
       const probeY = 64;
-      for (const el of chapters) {
+      for (let i = chapters.length - 1; i >= 0; i--) {
+        const el = chapters[i];
         const rect = el.getBoundingClientRect();
         if (rect.top <= probeY && rect.bottom >= probeY) {
           const next = el.getAttribute('data-chapter-polarity');
@@ -50,23 +86,13 @@ export default function App() {
       }
     };
 
-    const observer = new IntersectionObserver(
-      () => {
-        computePolarity();
-      },
-      {
-        rootMargin: '-60px 0px -85% 0px',
-        threshold: [0, 0.1, 0.5],
-      }
-    );
-
-    chapters.forEach((el) => observer.observe(el));
     window.addEventListener('scroll', computePolarity, { passive: true });
+    window.addEventListener('resize', computePolarity, { passive: true });
     computePolarity();
 
     return () => {
-      observer.disconnect();
       window.removeEventListener('scroll', computePolarity);
+      window.removeEventListener('resize', computePolarity);
     };
   }, [activeCue.polarity]);
 
@@ -76,12 +102,17 @@ export default function App() {
         Skip to main content
       </a>
 
-      {/* Single Shared Three.js WebGL2 Architectural Fresnel Glass Prism Canvas */}
-      <FresnelStageCanvas activeCueId={activeCue.id} />
+      {/* Act 0: Fast Geometric Bowtie Prism Preloader */}
+      <PrismLoader />
+
+      {/* Single Shared Three.js WebGL2 Refractive Prism & Beam Canvas */}
+      <FresnelStageCanvas activeCueId={activeCue.id} lang={lang} />
 
       <AdaptiveHeader
         polarity={headerPolarity}
         isScrolled={isScrolled}
+        lang={lang}
+        onChangeLang={setLang}
         menuOpen={menuOpen}
         onToggleMenu={() => setMenuOpen((prev) => !prev)}
         onCloseMenu={() => setMenuOpen(false)}
@@ -89,10 +120,14 @@ export default function App() {
       />
 
       <main id="main-content">
-        <HeroStage activeCue={activeCue} onOpenBrief={() => setBriefOpen(true)} />
-        <WorksAndMethod onOpenBrief={() => setBriefOpen(true)} />
-        <DisciplinesStandards onOpenBrief={() => setBriefOpen(true)} />
-        <ReviewsFaqFooter onOpenBrief={() => setBriefOpen(true)} />
+        <HeroStage activeCue={activeCue} lang={lang} onOpenBrief={() => setBriefOpen(true)} />
+        <WorksAndMethod lang={lang} onOpenBrief={() => setBriefOpen(true)} />
+        <DisciplinesStandards lang={lang} onOpenBrief={() => setBriefOpen(true)} />
+        <ReviewsFaqFooter
+          lang={lang}
+          onChangeLang={setLang}
+          onOpenBrief={() => setBriefOpen(true)}
+        />
       </main>
 
       <LiveCueWidget
