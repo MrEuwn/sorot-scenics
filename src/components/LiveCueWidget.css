@@ -1,0 +1,482 @@
+/* Floating Bottom-Left Live Lighting Cue Console */
+.live-cue-dock {
+  position: fixed;
+  left: clamp(16px, 2.2vw, 28px);
+  bottom: clamp(16px, 2.2vw, 28px);
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.live-cue-widget {
+  width: 264px;
+  border-radius: 18px;
+  background: rgba(14, 16, 20, 0.88);
+  color: var(--sorot-white);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  padding: 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.live-cue-widget__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.live-cue-widget__live-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(217, 56, 30, 0.24);
+  border: 1px solid rgba(255, 87, 59, 0.55);
+  color: var(--sorot-white);
+  font-size: 10px;
+}
+
+.live-cue-widget__tc {
+  color: var(--sorot-ice);
+  font-size: 10.5px;
+}
+
+/* Animated Live Stage Beam Preview Box */
+.live-cue-widget__stage {
+  position: relative;
+  height: 76px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: #0d0e11;
+  transition: background-color var(--dur-med) ease;
+}
+
+.live-cue-widget__stage--vermilion {
+  background: radial-gradient(circle at 50% 0%, #d9381e 0%, #3d1009 58%, #100b0a 100%);
+}
+
+.live-cue-widget__stage--daylight {
+  background: radial-gradient(circle at 50% 0%, #f6f5f0 0%, #b5bcc7 62%, #292d34 100%);
+}
+
+.live-cue-widget__stage--chiaroscuro {
+  background: radial-gradient(circle at 50% 0%, #1d3540 0%, #0c1016 62%, #050608 100%);
+}
+
+.live-cue-widget__beam {
+  position: absolute;
+  top: -12px;
+  width: 34px;
+  height: 112px;
+  transform-origin: top center;
+  opacity: 0.72;
+  filter: blur(5px);
+  pointer-events: none;
+}
+
+.live-cue-widget__stage--vermilion .live-cue-widget__beam--a {
+  left: 24%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(217, 56, 30, 0));
+  animation: beamSweepA 5.2s ease-in-out infinite alternate;
+}
+
+.live-cue-widget__stage--vermilion .live-cue-widget__beam--b {
+  left: 50%;
+  background: linear-gradient(180deg, rgba(207, 244, 255, 0.85), rgba(217, 56, 30, 0));
+  animation: beamSweepB 4.4s ease-in-out infinite alternate;
+}
+
+.live-cue-widget__stage--vermilion .live-cue-widget__beam--c {
+  left: 72%;
+  background: linear-gradient(180deg, rgba(255, 198, 165, 0.85), rgba(217, 56, 30, 0));
+  animation: beamSweepC 6s ease-in-out infinite alternate;
+}
+
+.live-cue-widget__stage--daylight .live-cue-widget__beam--a,
+.live-cue-widget__stage--daylight .live-cue-widget__beam--b,
+.live-cue-widget__stage--daylight .live-cue-widget__beam--c {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0));
+}
+
+.live-cue-widget__stage--daylight .live-cue-widget__beam--a {
+  left: 26%;
+  animation: beamSweepA 5.2s ease-in-out infinite alternate;
+}
+
+.live-cue-widget__stage--daylight .live-cue-widget__beam--b {
+  left: 52%;
+  animation: beamSweepB 4.4s ease-in-out infinite alternate;
+}
+
+.live-cue-widget__stage--daylight .live-cue-widget__beam--c {
+  left: 70%;
+  animation: beamSweepC 6s ease-in-out infinite alternate;
+}
+
+.live-cue-widget__stage--chiaroscuro .live-cue-widget__beam--a {
+  left: 22%;
+  background: linear-gradient(180deg, rgba(207, 244, 255, 0.98), rgba(207, 244, 255, 0));
+  animation: beamSweepA 4.6s ease-in-out infinite alternate;
+}
+
+.live-cue-widget__stage--chiaroscuro .live-cue-widget__beam--b {
+  left: 50%;
+  background: linear-gradient(180deg, rgba(255, 87, 59, 0.85), rgba(207, 244, 255, 0));
+  animation: beamSweepB 3.9s ease-in-out infinite alternate;
+}
+
+.live-cue-widget__stage--chiaroscuro .live-cue-widget__beam--c {
+  left: 76%;
+  background: linear-gradient(180deg, rgba(207, 244, 255, 0.95), rgba(17, 18, 20, 0));
+  animation: beamSweepC 5.4s ease-in-out infinite alternate;
+}
+
+.live-cue-widget__prism-wire {
+  position: absolute;
+  inset: 10px 14px 22px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  clip-path: polygon(0 100%, 58% 0, 100% 100%);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.live-cue-widget__stage-caption {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(10, 11, 13, 0.68);
+  color: var(--sorot-white);
+  font-size: 9.5px;
+}
+
+@keyframes beamSweepA {
+  0% {
+    transform: rotate(-22deg);
+  }
+  100% {
+    transform: rotate(12deg);
+  }
+}
+
+@keyframes beamSweepB {
+  0% {
+    transform: rotate(16deg);
+  }
+  100% {
+    transform: rotate(-16deg);
+  }
+}
+
+@keyframes beamSweepC {
+  0% {
+    transform: rotate(24deg);
+  }
+  100% {
+    transform: rotate(-10deg);
+  }
+}
+
+/* 3 Mechanical Lighting Cue Switches */
+.live-cue-widget__switches {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.cue-switch {
+  display: grid;
+  grid-template-columns: 24px 1fr 8px;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  padding: 7px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: #e4e7ee;
+  transition:
+    background-color var(--dur-fast) ease,
+    border-color var(--dur-fast) ease,
+    transform var(--dur-fast) var(--ease-snap);
+}
+
+.cue-switch:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.cue-switch--active {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(207, 244, 255, 0.52);
+  color: var(--sorot-white);
+}
+
+.cue-switch__code {
+  color: var(--sorot-ice);
+  font-size: 10.5px;
+}
+
+.cue-switch__name {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.cue-switch__led {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  transition: background-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease;
+}
+
+.cue-switch--active .cue-switch__led {
+  background: var(--led-color, var(--sorot-ice));
+  box-shadow: 0 0 10px var(--led-color, var(--sorot-ice));
+}
+
+.live-cue-compact-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 14px 0 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(14, 16, 20, 0.86);
+  color: var(--sorot-white);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  transition: transform var(--dur-fast) var(--ease-snap), border-color var(--dur-fast) ease;
+}
+
+.live-cue-compact-pill:hover {
+  transform: translateY(-2px);
+  border-color: rgba(207, 244, 255, 0.55);
+}
+
+.live-cue-compact-pill__label {
+  color: var(--sorot-white);
+  font-size: 10.5px;
+}
+
+.live-cue-widget__min-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--sorot-white);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Iconic + Expand Pill */
+.live-cue-dock__expand {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(17, 18, 20, 0.78);
+  color: var(--sorot-white);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition:
+    transform var(--dur-fast) var(--ease-snap),
+    background-color var(--dur-fast) ease;
+}
+
+.live-cue-dock__expand:hover {
+  transform: scale(1.06);
+  background: var(--sorot-vermilion);
+  border-color: var(--sorot-vermilion);
+}
+
+/* Cue Technical Spec Drawer */
+.cue-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 115;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 24px;
+}
+
+.cue-drawer-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 11, 13, 0.56);
+  backdrop-filter: blur(8px);
+}
+
+.cue-drawer {
+  position: relative;
+  z-index: 2;
+  width: min(440px, 100%);
+  border-radius: 24px;
+  background: var(--sorot-obsidian);
+  color: var(--sorot-white);
+  border: 1px solid rgba(207, 244, 255, 0.24);
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 28px 64px rgba(0, 0, 0, 0.45);
+}
+
+.cue-drawer__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--sorot-ice);
+}
+
+.cue-drawer__close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--sorot-white);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cue-drawer__title {
+  font-size: 46px;
+  color: var(--sorot-white);
+}
+
+.cue-drawer__desc {
+  margin: 0;
+  color: var(--ink-muted-on-dark);
+  font-size: 14.5px;
+}
+
+.cue-drawer__specs {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.cue-drawer__spec-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 13px;
+}
+
+.cue-drawer__spec-row span {
+  color: var(--ink-muted-on-dark);
+}
+
+.cue-drawer__modes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cue-drawer__mode-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cue-drawer__pill {
+  padding: 7px 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--sorot-white);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cue-drawer__pill--active {
+  background: var(--sorot-vermilion);
+  border-color: var(--sorot-vermilion);
+}
+
+.cue-drawer__cta {
+  height: 46px;
+  border-radius: var(--radius-pill);
+  border: 0;
+  background: var(--sorot-white);
+  color: var(--sorot-obsidian);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.cue-drawer__cta:hover {
+  background: var(--sorot-ice);
+}
+
+@media (max-width: 680px) {
+  .live-cue-dock {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    justify-content: space-between;
+  }
+
+  .live-cue-widget {
+    width: auto;
+    flex: 1;
+    padding: 8px 10px;
+    gap: 6px;
+  }
+
+  .live-cue-widget__stage {
+    display: none;
+  }
+
+  .live-cue-widget__switches {
+    flex-direction: row;
+    gap: 4px;
+  }
+
+  .cue-switch {
+    grid-template-columns: auto 1fr;
+    padding: 6px 7px;
+    gap: 5px;
+  }
+
+  .cue-switch__name {
+    font-size: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .cue-switch__led {
+    display: none;
+  }
+
+  .live-cue-dock__expand {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+  }
+}

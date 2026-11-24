@@ -1,0 +1,1332 @@
+/* ============================================================
+   HERO STAGE & RISING CHALK DOME TRANSITION
+   ============================================================ */
+.hero-stage {
+  position: relative;
+  min-height: 100vh;
+}
+
+.hero-stage__viewport {
+  position: relative;
+  min-height: min(100vh, 980px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 120px 0 110px;
+}
+
+.hero-stage__content {
+  position: relative;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: clamp(18px, 2.4vw, 28px);
+}
+
+.hero-stage__meta-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.hero-stage__spec-pill {
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--hero-badge-bg);
+  border: 1px solid var(--hero-badge-border);
+  color: var(--hero-ink);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.hero-stage--daylight .hero-stage__spec-pill {
+  background: rgba(17, 18, 20, 0.08);
+  border-color: rgba(17, 18, 20, 0.18);
+  color: var(--sorot-obsidian);
+}
+
+.hero-stage--chiaroscuro .hero-stage__spec-pill {
+  background: rgba(207, 244, 255, 0.1);
+  border-color: rgba(207, 244, 255, 0.34);
+  color: var(--sorot-ice);
+}
+
+.hero-stage__headline {
+  font-size: clamp(78px, 12.2vw, 178px);
+  line-height: 0.8;
+  letter-spacing: -0.02em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--hero-ink);
+  text-shadow: 0 14px 40px rgba(0, 0, 0, 0.12);
+}
+
+.hero-stage--daylight .hero-stage__headline {
+  text-shadow: none;
+}
+
+.hero-stage__line {
+  display: block;
+}
+
+.hero-stage__line--accent {
+  color: var(--hero-secondary-ink);
+}
+
+.hero-stage__subbar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  max-width: 600px;
+}
+
+.hero-stage__lead {
+  margin: 0;
+  font-size: clamp(16px, 1.35vw, 18px);
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--hero-ink);
+  opacity: 0.94;
+  padding: 8px 16px;
+  border-radius: 14px;
+  background: rgba(17, 18, 20, 0.18);
+  backdrop-filter: blur(10px);
+}
+
+.hero-stage--daylight .hero-stage__lead {
+  background: rgba(246, 245, 240, 0.72);
+  color: var(--sorot-obsidian);
+}
+
+.hero-stage--chiaroscuro .hero-stage__lead {
+  background: rgba(17, 18, 20, 0.62);
+  color: var(--sorot-white);
+}
+
+/* Bottom-Right Rotating Circular SCROLL Stamp */
+.scroll-stamp {
+  position: absolute;
+  right: clamp(20px, 3vw, 38px);
+  bottom: clamp(24px, 3vw, 38px);
+  z-index: 12;
+  width: 92px;
+  height: 92px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--hero-ink);
+  transition: transform var(--dur-fast) var(--ease-snap);
+}
+
+.scroll-stamp:hover {
+  transform: scale(1.06);
+}
+
+.scroll-stamp__svg {
+  animation: stampSpin 16s linear infinite;
+}
+
+.scroll-stamp__text {
+  fill: currentColor;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+}
+
+.scroll-stamp__center {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 500;
+}
+
+@keyframes stampSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Rising Curved Chalk Dome Transition */
+.hero-dome-transition {
+  position: relative;
+  z-index: 10;
+  background: var(--sorot-chalk);
+  color: var(--ink-on-light);
+  padding: clamp(86px, 9vw, 132px) 0 clamp(72px, 7vw, 112px);
+  margin-top: 64px;
+}
+
+.hero-dome-transition__arc {
+  position: absolute;
+  top: -72px;
+  left: -6%;
+  right: -6%;
+  height: 144px;
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  background: var(--sorot-chalk);
+  pointer-events: none;
+}
+
+.hero-thesis {
+  position: relative;
+  z-index: 2;
+  max-width: 980px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.hero-thesis__eyebrow {
+  color: var(--ink-accent-on-light);
+}
+
+.hero-thesis__statement {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(24px, 2.75vw, 36px);
+  font-weight: 600;
+  line-height: 1.24;
+  letter-spacing: -0.025em;
+  color: var(--ink-on-light);
+}
+
+.hero-thesis__highlight {
+  color: var(--ink-accent-on-light);
+}
+
+.hero-thesis__specs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px 26px;
+  padding-top: 12px;
+  border-top: 1px solid var(--hairline-light);
+  color: var(--ink-muted-on-light);
+}
+
+/* ============================================================
+   SELECTED STAGE WORKS (2x3 PANORAMIC GRID)
+   ============================================================ */
+.works-section {
+  padding: clamp(56px, 6vw, 88px) 0 clamp(76px, 8vw, 116px);
+}
+
+.section-head {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: clamp(32px, 4vw, 52px);
+}
+
+.section-head__eyebrow {
+  color: var(--ink-accent-on-light);
+}
+
+.text-vermilion {
+  color: var(--sorot-vermilion);
+}
+
+.works-section__title {
+  font-size: clamp(54px, 7vw, 96px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 20px;
+  color: var(--ink-on-light);
+}
+
+.works-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.work-card {
+  position: relative;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: var(--sorot-obsidian);
+  aspect-ratio: 16 / 10;
+}
+
+.work-card__trigger {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  display: block;
+}
+
+.work-card__media {
+  position: absolute;
+  inset: 0;
+}
+
+.work-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-slow) var(--ease-expo);
+}
+
+.work-card__trigger:hover .work-card__media img {
+  transform: scale(1.05);
+}
+
+.work-card__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(17, 18, 20, 0.28) 0%,
+    rgba(17, 18, 20, 0.08) 42%,
+    rgba(17, 18, 20, 0.88) 100%
+  );
+}
+
+.work-card__top-tags {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.work-card__pill {
+  padding: 5px 10px;
+  border-radius: var(--radius-pill);
+  background: rgba(17, 18, 20, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: var(--sorot-white);
+  backdrop-filter: blur(8px);
+}
+
+.work-card__body {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: var(--sorot-white);
+}
+
+.work-card__cat {
+  color: var(--sorot-ice);
+}
+
+.work-card__title {
+  font-size: clamp(32px, 3.2vw, 46px);
+  color: var(--sorot-white);
+}
+
+.work-card__client {
+  font-size: 13.5px;
+  color: #dfe4ec;
+}
+
+/* Work Dossier Modal */
+.work-dossier-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 130;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.work-dossier-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 11, 13, 0.78);
+  backdrop-filter: blur(12px);
+}
+
+.work-dossier-modal__card {
+  position: relative;
+  z-index: 2;
+  width: min(760px, 100%);
+  border-radius: 26px;
+  overflow: hidden;
+  background: var(--sorot-obsidian);
+  color: var(--sorot-white);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.work-dossier-modal__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 4;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(17, 18, 20, 0.78);
+  color: var(--sorot-white);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.work-dossier-modal__media {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.work-dossier-modal__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.work-dossier-modal__body {
+  padding: 26px 28px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.work-dossier-modal__cat {
+  color: var(--sorot-ice);
+}
+
+.work-dossier-modal__title {
+  font-size: clamp(36px, 4.5vw, 56px);
+}
+
+.work-dossier-modal__summary {
+  margin: 0;
+  color: var(--ink-muted-on-dark);
+}
+
+.work-dossier-modal__specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.work-dossier-modal__specs span {
+  padding: 5px 11px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(207, 244, 255, 0.24);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--sorot-ice);
+}
+
+/* ============================================================
+   PAUSEABLE KINETIC METRICS MARQUEE & PROOF METRICS
+   ============================================================ */
+.method-section {
+  padding: clamp(24px, 4vw, 48px) 0 clamp(76px, 8vw, 118px);
+}
+
+.marquee-band {
+  border-top: 1px solid var(--hairline-light);
+  border-bottom: 1px solid var(--hairline-light);
+  padding: 24px 0 32px;
+}
+
+.marquee-band__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.marquee-pause-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--hairline-light);
+  background: var(--sorot-white);
+  color: var(--ink-on-light);
+  font-size: 12.5px;
+  font-weight: 600;
+  transition:
+    background-color var(--dur-fast) ease,
+    color var(--dur-fast) ease,
+    border-color var(--dur-fast) ease;
+}
+
+.marquee-pause-btn:hover {
+  background: var(--sorot-obsidian);
+  color: var(--sorot-white);
+  border-color: var(--sorot-obsidian);
+}
+
+.marquee-track-wrap {
+  overflow: hidden;
+  width: 100%;
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: sorotMarquee 32s linear infinite;
+}
+
+.marquee-track-wrap:hover .marquee-track,
+.marquee-track-wrap:focus-within .marquee-track,
+.marquee-track-wrap--paused .marquee-track {
+  animation-play-state: paused;
+}
+
+.marquee-group {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.marquee-item {
+  font-size: clamp(72px, 9.8vw, 140px);
+  color: var(--sorot-vermilion);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+}
+
+.marquee-sep {
+  margin-inline: clamp(18px, 2.5vw, 38px);
+  color: var(--ink-on-light);
+  opacity: 0.3;
+}
+
+@keyframes sorotMarquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.proof-block {
+  padding-top: clamp(48px, 5.5vw, 76px);
+}
+
+.proof-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.proof-card {
+  border-radius: var(--radius-card);
+  background: var(--card-tonal);
+  padding: clamp(24px, 2.6vw, 34px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.proof-card__tag {
+  color: var(--ink-accent-on-light);
+}
+
+.proof-card__value {
+  font-size: clamp(68px, 7.2vw, 106px);
+  color: var(--ink-on-light);
+  margin: 4px 0;
+}
+
+.proof-card__label {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--ink-on-light);
+}
+
+.proof-card__detail {
+  margin: 0;
+  font-size: 14.5px;
+  color: var(--ink-muted-on-light);
+}
+
+.proof-cta-bar {
+  margin-top: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.proof-cta-bar__note {
+  margin: 0;
+  max-width: 560px;
+  font-size: 15.5px;
+  font-weight: 500;
+  color: var(--ink-muted-on-light);
+}
+
+/* ============================================================
+   MONUMENTAL DISCIPLINES HOVER INDEX
+   ============================================================ */
+.disciplines-section {
+  padding: clamp(32px, 4vw, 56px) 0 clamp(92px, 9vw, 136px);
+}
+
+.disciplines-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.85fr);
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+}
+
+.disciplines-index {
+  margin-top: 22px;
+  border-top: 1px solid var(--hairline-light);
+}
+
+.discipline-row {
+  border-bottom: 1px solid var(--hairline-light);
+}
+
+.discipline-row__btn {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 8px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  transition: padding-left var(--dur-med) var(--ease-expo);
+}
+
+.discipline-row--active .discipline-row__btn,
+.discipline-row__btn:hover {
+  padding-left: 16px;
+}
+
+.discipline-row__index {
+  color: var(--ink-muted-on-light);
+}
+
+.discipline-row--active .discipline-row__index {
+  color: var(--ink-accent-on-light);
+}
+
+.discipline-row__title {
+  font-size: clamp(44px, 5.6vw, 82px);
+  color: var(--ink-on-light);
+  transition: color var(--dur-fast) ease;
+}
+
+.discipline-row--active .discipline-row__title,
+.discipline-row__btn:hover .discipline-row__title {
+  color: var(--sorot-vermilion);
+}
+
+.discipline-row__arrow {
+  color: var(--ink-muted-on-light);
+  transition: transform var(--dur-fast) ease, color var(--dur-fast) ease;
+}
+
+.discipline-row--active .discipline-row__arrow {
+  color: var(--sorot-vermilion);
+  transform: translate(3px, -3px);
+}
+
+.discipline-row__mobile-preview {
+  display: none;
+}
+
+.disciplines-preview-col {
+  position: sticky;
+  top: 104px;
+}
+
+.discipline-plate {
+  border-radius: 24px;
+  overflow: hidden;
+  background: var(--sorot-obsidian);
+  color: var(--sorot-white);
+  box-shadow: 0 26px 56px rgba(17, 18, 20, 0.14);
+}
+
+.discipline-plate__image {
+  position: relative;
+  aspect-ratio: 16 / 11;
+  overflow: hidden;
+}
+
+.discipline-plate__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.discipline-plate__badge {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  padding: 5px 11px;
+  border-radius: var(--radius-pill);
+  background: rgba(17, 18, 20, 0.78);
+  border: 1px solid rgba(207, 244, 255, 0.34);
+  color: var(--sorot-ice);
+  backdrop-filter: blur(8px);
+}
+
+.discipline-plate__body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.discipline-plate__code {
+  color: var(--sorot-vermilion-bright);
+}
+
+.discipline-plate__title {
+  font-size: 40px;
+  color: var(--sorot-white);
+}
+
+.discipline-plate__summary {
+  margin: 0;
+  color: var(--ink-muted-on-dark);
+  font-size: 14.5px;
+}
+
+.discipline-plate__cta {
+  margin-top: 6px;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--sorot-white);
+  font-weight: 600;
+  font-size: 13.5px;
+  transition: background-color var(--dur-fast) ease, color var(--dur-fast) ease;
+}
+
+.discipline-plate__cta:hover {
+  background: var(--sorot-white);
+  color: var(--sorot-obsidian);
+}
+
+/* ============================================================
+   CARBON OBSIDIAN STANDARDS GLASS WALL (#111214)
+   ============================================================ */
+.standards-section {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(104px, 11vw, 156px) 0 clamp(108px, 11vw, 160px);
+}
+
+.standards-section__ambient {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 22% 24%, rgba(217, 56, 30, 0.16) 0%, rgba(17, 18, 20, 0) 48%),
+    radial-gradient(circle at 82% 76%, rgba(207, 244, 255, 0.1) 0%, rgba(17, 18, 20, 0) 46%);
+  pointer-events: none;
+}
+
+.standards-section__inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.standards-section__head {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.standards-section__eyebrow {
+  color: var(--sorot-ice);
+}
+
+.standards-section__display {
+  font-size: clamp(72px, 13.5vw, 204px);
+  line-height: 0.8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.standards-section__line-white {
+  color: var(--sorot-white);
+}
+
+.standards-section__line-vermilion {
+  color: var(--sorot-vermilion-bright);
+}
+
+/* 3 Refined Frosted Glass Certification Cards Sweeping Over the Display */
+.standards-cards {
+  width: 100%;
+  margin-top: clamp(-36px, -3.5vw, -16px);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  position: relative;
+  z-index: 4;
+}
+
+.standard-glass-card {
+  border-radius: 22px;
+  padding: clamp(24px, 2.6vw, 32px);
+  background: rgba(24, 26, 30, 0.8);
+  border: 1px solid rgba(207, 244, 255, 0.26);
+  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.standard-glass-card--2 {
+  transform: translateY(22px);
+}
+
+.standard-glass-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.standard-glass-card__code {
+  color: var(--sorot-vermilion-bright);
+}
+
+.standard-glass-card__metric {
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: rgba(207, 244, 255, 0.12);
+  border: 1px solid rgba(207, 244, 255, 0.28);
+  color: var(--sorot-ice);
+}
+
+.standard-glass-card__title {
+  font-size: clamp(32px, 3vw, 44px);
+  color: var(--sorot-white);
+}
+
+.standard-glass-card__desc {
+  margin: 0;
+  color: #dfe4ec;
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+
+/* ============================================================
+   CLIENT REVIEWS HORIZONTAL CAROUSEL
+   ============================================================ */
+.reviews-section {
+  padding: clamp(92px, 9vw, 132px) 0 clamp(64px, 6.5vw, 96px);
+}
+
+.reviews-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 34px;
+}
+
+.reviews-head__title {
+  font-size: clamp(54px, 7vw, 92px);
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 18px;
+}
+
+.reviews-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.reviews-nav-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--hairline-light);
+  background: var(--sorot-white);
+  color: var(--ink-on-light);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background-color var(--dur-fast) ease,
+    color var(--dur-fast) ease,
+    transform var(--dur-fast) var(--ease-snap);
+}
+
+.reviews-nav-btn:hover {
+  background: var(--sorot-obsidian);
+  color: var(--sorot-white);
+  transform: scale(1.05);
+}
+
+.reviews-track {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 12px;
+  scrollbar-width: thin;
+}
+
+.review-card {
+  flex: 0 0 min(380px, 84vw);
+  scroll-snap-align: start;
+  border-radius: 22px;
+  background: var(--card-tonal);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 28px;
+  min-height: 320px;
+}
+
+.review-card__author {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.review-card__monogram {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: var(--sorot-obsidian);
+  color: var(--sorot-white);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.review-card__name {
+  display: block;
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--ink-on-light);
+}
+
+.review-card__role {
+  font-size: 13px;
+  color: var(--ink-muted-on-light);
+}
+
+.review-card__quote {
+  margin: 0;
+  font-size: 15.5px;
+  line-height: 1.55;
+  color: var(--ink-on-light);
+}
+
+.review-card__project {
+  color: var(--ink-accent-on-light);
+}
+
+/* ============================================================
+   NARROW EDITORIAL FAQ ACCORDION
+   ============================================================ */
+.faq-section {
+  padding: clamp(44px, 5vw, 72px) 0 clamp(104px, 10vw, 148px);
+}
+
+.faq-container {
+  max-width: 780px;
+}
+
+.faq-head {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 38px;
+}
+
+.faq-head__title {
+  font-size: clamp(48px, 6.2vw, 82px);
+}
+
+.faq-list {
+  border-top: 1px solid var(--hairline-light);
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--hairline-light);
+}
+
+.faq-item__heading {
+  margin: 0;
+}
+
+.faq-item__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px 4px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font-family: var(--font-sans);
+  font-size: clamp(16px, 1.45vw, 18.5px);
+  font-weight: 600;
+  color: var(--ink-on-light);
+}
+
+.faq-item__trigger:hover .faq-item__question {
+  color: var(--ink-accent-on-light);
+}
+
+.faq-item__icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--card-tonal);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--ink-on-light);
+}
+
+.faq-item--open .faq-item__icon {
+  background: var(--sorot-vermilion);
+  color: var(--sorot-white);
+}
+
+.faq-item__panel {
+  padding: 0 44px 22px 4px;
+  color: var(--ink-muted-on-light);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.faq-item__panel p {
+  margin: 0;
+}
+
+/* ============================================================
+   CLOSING MONOLITH VERMILION CTA & HIGH-CONTRAST GLASS FOOTER
+   ============================================================ */
+.monolith-footer {
+  padding: clamp(104px, 10vw, 152px) 0 clamp(32px, 4vw, 48px);
+}
+
+.monolith-footer__inner {
+  position: relative;
+  z-index: 12;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(56px, 7vw, 96px);
+}
+
+.monolith-footer__cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 24px;
+}
+
+.monolith-footer__eyebrow {
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: rgba(17, 18, 20, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  color: var(--sorot-white);
+}
+
+.monolith-footer__headline {
+  font-size: clamp(68px, 12vw, 174px);
+  line-height: 0.8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.monolith-footer__line-light {
+  color: var(--sorot-white);
+}
+
+.monolith-footer__line-dark {
+  color: var(--sorot-obsidian);
+}
+
+.monolith-footer__cta .split-pill {
+  position: relative;
+  z-index: 8;
+}
+
+/* Calibrated Protective Dark-Vermilion Scrim Footer Card (ZERO glare washout, >= 8:1 contrast!) */
+.glass-footer-card {
+  position: relative;
+  z-index: 8;
+  border-radius: 28px;
+  padding: clamp(28px, 3.6vw, 48px);
+  background: rgba(17, 18, 20, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow: 0 28px 64px rgba(17, 18, 20, 0.26);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  color: var(--sorot-white);
+}
+
+.glass-footer-card__grid {
+  display: grid;
+  grid-template-columns: 1.35fr repeat(3, minmax(0, 1fr));
+  gap: clamp(24px, 3.4vw, 44px);
+  padding-bottom: 36px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.glass-footer-card__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.glass-footer-card__wordmark {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 40px;
+  letter-spacing: 0.02em;
+  line-height: 0.9;
+  color: var(--sorot-white);
+}
+
+.glass-footer-card__tagline {
+  margin: 0;
+  max-width: 300px;
+  font-size: 14px;
+  color: #f2f4f8;
+}
+
+.glass-footer-card__certs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.glass-footer-card__cert-badge {
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: rgba(17, 18, 20, 0.56);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  color: var(--sorot-white);
+}
+
+.glass-footer-card__col-title {
+  margin: 0 0 14px;
+  color: var(--sorot-ice);
+}
+
+.glass-footer-card__links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.glass-footer-card__links a {
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--sorot-white);
+  transition: color var(--dur-fast) ease;
+}
+
+.glass-footer-card__links a:hover {
+  color: var(--sorot-ice);
+}
+
+.glass-footer-card__cities {
+  margin: 0 0 16px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--sorot-white);
+}
+
+.glass-footer-card__contact {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.glass-footer-card__contact a {
+  font-weight: 600;
+  color: var(--sorot-ice);
+}
+
+.glass-footer-card__contact span {
+  color: #e8ecf2;
+}
+
+.glass-footer-card__bottom {
+  padding-top: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  color: #f0f3f7;
+}
+
+.glass-footer-card__legal {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  font-size: 13.5px;
+}
+
+.glass-footer-card__text-btn {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--sorot-ice);
+  font-weight: 600;
+}
+
+/* ============================================================
+   RESPONSIVE BREAKPOINTS (1024px & 390px MOBILE)
+   ============================================================ */
+@media (max-width: 1024px) {
+  .proof-grid,
+  .standards-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .standard-glass-card--2 {
+    transform: none;
+  }
+
+  .standards-cards {
+    margin-top: 32px;
+  }
+
+  .disciplines-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .disciplines-preview-col {
+    display: none;
+  }
+
+  .discipline-row--active .discipline-row__mobile-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 4px 8px 22px;
+  }
+
+  .discipline-row__mobile-img {
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 16 / 10;
+  }
+
+  .discipline-row__mobile-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .discipline-row__spec {
+    color: var(--ink-accent-on-light);
+  }
+
+  .discipline-row__summary {
+    margin: 0;
+    color: var(--ink-muted-on-light);
+  }
+
+  .glass-footer-card__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .hero-stage__viewport {
+    min-height: 92vh;
+    padding: 96px 0 124px;
+  }
+
+  .hero-stage__headline {
+    font-size: clamp(48px, 15vw, 74px);
+    padding-inline: 4px;
+  }
+
+  .scroll-stamp {
+    display: none;
+  }
+
+  .hero-dome-transition__arc {
+    top: -40px;
+    height: 80px;
+  }
+
+  .works-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .work-card {
+    aspect-ratio: 4 / 3;
+  }
+
+  .glass-footer-card__grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Leave breathing room for compact mobile bottom cue dock */
+  .monolith-footer {
+    padding-bottom: 108px;
+  }
+}

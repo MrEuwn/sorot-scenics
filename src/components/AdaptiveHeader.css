@@ -1,0 +1,491 @@
+.adaptive-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  padding: 20px var(--gutter);
+  pointer-events: none;
+}
+
+.adaptive-header__inner {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+}
+
+.adaptive-header__brand,
+.adaptive-header__menu-pill,
+.adaptive-header__cta-pill {
+  pointer-events: auto;
+}
+
+/* Brand mark with protective pill on scroll so logo NEVER collides with headlines */
+.adaptive-header__brand {
+  justify-self: start;
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  transition:
+    background-color var(--dur-med) ease,
+    border-color var(--dur-med) ease,
+    color var(--dur-fast) ease,
+    backdrop-filter var(--dur-med) ease;
+}
+
+.adaptive-header__brand-mark {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 30px;
+  letter-spacing: 0.02em;
+  line-height: 0.9;
+}
+
+.adaptive-header__brand-reg {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+/* Center frosted glass Menu pill */
+.adaptive-header__menu-pill {
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  height: 46px;
+  padding: 0 22px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition:
+    transform var(--dur-fast) var(--ease-snap),
+    background-color var(--dur-med) ease,
+    border-color var(--dur-med) ease,
+    color var(--dur-fast) ease;
+}
+
+.adaptive-header__menu-pill:hover {
+  transform: translateY(-1px);
+}
+
+.adaptive-header__dots {
+  display: grid;
+  grid-template-columns: repeat(2, 4px);
+  gap: 3px;
+  width: 11px;
+  height: 11px;
+  align-content: center;
+}
+
+.adaptive-header__dots span {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.adaptive-header__dots span:nth-child(3) {
+  grid-column: 1 / span 2;
+  justify-self: center;
+}
+
+/* Right solid Book Production pill */
+.adaptive-header__cta-pill {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 46px;
+  padding: 0 24px;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition:
+    transform var(--dur-fast) var(--ease-snap),
+    background-color var(--dur-fast) ease,
+    color var(--dur-fast) ease,
+    box-shadow var(--dur-fast) ease;
+}
+
+.adaptive-header__cta-pill:hover {
+  transform: translateY(-1px);
+}
+
+/* Polarity: Vermilion */
+.adaptive-header--vermilion .adaptive-header__brand {
+  color: var(--sorot-white);
+}
+
+.adaptive-header--vermilion.adaptive-header--scrolled .adaptive-header__brand {
+  background: rgba(17, 18, 20, 0.42);
+  border-color: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(14px);
+}
+
+.adaptive-header--vermilion .adaptive-header__menu-pill {
+  background: rgba(17, 18, 20, 0.28);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: var(--sorot-white);
+}
+
+.adaptive-header--vermilion .adaptive-header__menu-pill:hover {
+  background: rgba(17, 18, 20, 0.48);
+}
+
+.adaptive-header--vermilion .adaptive-header__cta-pill {
+  background: var(--sorot-white);
+  color: var(--sorot-obsidian);
+}
+
+.adaptive-header--vermilion .adaptive-header__cta-pill:hover {
+  background: var(--sorot-ice);
+}
+
+/* Polarity: Light (Chalk Paper) */
+.adaptive-header--light .adaptive-header__brand {
+  color: var(--sorot-obsidian);
+}
+
+.adaptive-header--light.adaptive-header--scrolled .adaptive-header__brand {
+  background: rgba(246, 245, 240, 0.86);
+  border-color: rgba(17, 18, 20, 0.14);
+  backdrop-filter: blur(14px);
+}
+
+.adaptive-header--light .adaptive-header__menu-pill {
+  background: rgba(246, 245, 240, 0.86);
+  border-color: rgba(17, 18, 20, 0.16);
+  color: var(--sorot-obsidian);
+}
+
+.adaptive-header--light .adaptive-header__menu-pill:hover {
+  background: var(--sorot-white);
+}
+
+.adaptive-header--light .adaptive-header__cta-pill {
+  background: var(--sorot-obsidian);
+  color: var(--sorot-white);
+}
+
+.adaptive-header--light .adaptive-header__cta-pill:hover {
+  background: var(--sorot-vermilion);
+}
+
+/* Polarity: Dark (Carbon Obsidian) */
+.adaptive-header--dark .adaptive-header__brand {
+  color: var(--sorot-white);
+}
+
+.adaptive-header--dark.adaptive-header--scrolled .adaptive-header__brand {
+  background: rgba(17, 18, 20, 0.78);
+  border-color: rgba(207, 244, 255, 0.22);
+  backdrop-filter: blur(14px);
+}
+
+.adaptive-header--dark .adaptive-header__menu-pill {
+  background: rgba(24, 26, 30, 0.78);
+  border-color: rgba(207, 244, 255, 0.24);
+  color: var(--sorot-white);
+}
+
+.adaptive-header--dark .adaptive-header__menu-pill:hover {
+  background: rgba(34, 38, 44, 0.92);
+}
+
+.adaptive-header--dark .adaptive-header__cta-pill {
+  background: var(--sorot-white);
+  color: var(--sorot-obsidian);
+}
+
+.adaptive-header--dark .adaptive-header__cta-pill:hover {
+  background: var(--sorot-ice);
+}
+
+/* 12-Column Fullscreen Bento Menu Overlay */
+.bento-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(14px, 2.5vw, 28px);
+}
+
+.bento-menu__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 11, 13, 0.78);
+  backdrop-filter: blur(16px);
+}
+
+.bento-menu__sheet {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1320px;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  border-radius: 28px;
+  background: var(--sorot-obsidian);
+  color: var(--sorot-white);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  padding: clamp(20px, 3vw, 36px);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.bento-menu__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.bento-menu__identity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.bento-menu__sub {
+  color: var(--ink-muted-on-dark);
+}
+
+.bento-menu__close {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 18px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--sorot-white);
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color var(--dur-fast) ease;
+}
+
+.bento-menu__close:hover {
+  background: var(--sorot-vermilion);
+  border-color: var(--sorot-vermilion);
+}
+
+.bento-menu__grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 24px;
+  align-items: stretch;
+}
+
+.bento-menu__nav {
+  grid-column: span 6;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.bento-menu__eyebrow {
+  color: var(--sorot-ice);
+  margin-bottom: 12px;
+}
+
+.bento-menu__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.bento-menu__link {
+  display: grid;
+  grid-template-columns: 38px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition:
+    background-color var(--dur-fast) ease,
+    padding-left var(--dur-fast) var(--ease-snap);
+}
+
+.bento-menu__link:hover {
+  background: rgba(255, 255, 255, 0.06);
+  padding-left: 18px;
+}
+
+.bento-menu__index {
+  color: var(--sorot-vermilion-bright);
+}
+
+.bento-menu__label {
+  font-size: clamp(32px, 3.6vw, 48px);
+  color: var(--sorot-white);
+}
+
+.bento-menu__arrow {
+  color: var(--ink-muted-on-dark);
+  transition: transform var(--dur-fast) ease, color var(--dur-fast) ease;
+}
+
+.bento-menu__link:hover .bento-menu__arrow {
+  color: var(--sorot-ice);
+  transform: translate(2px, -2px);
+}
+
+.bento-menu__footer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding-top: 12px;
+}
+
+.bento-menu__cities {
+  color: var(--ink-muted-on-dark);
+}
+
+.bento-menu__brief-btn {
+  height: 44px;
+  padding: 0 22px;
+  border-radius: var(--radius-pill);
+  border: 0;
+  background: var(--sorot-vermilion);
+  color: var(--sorot-white);
+  font-weight: 600;
+  font-size: 14px;
+  transition: background-color var(--dur-fast) ease;
+}
+
+.bento-menu__brief-btn:hover {
+  background: var(--sorot-white);
+  color: var(--sorot-obsidian);
+}
+
+.bento-menu__spotlights {
+  grid-column: span 6;
+  display: flex;
+  flex-direction: column;
+}
+
+.bento-menu__cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  flex: 1;
+}
+
+.bento-menu__card {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  min-height: 180px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.bento-menu__card--lead {
+  grid-column: span 2;
+  min-height: 220px;
+}
+
+.bento-menu__card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-med) var(--ease-expo);
+}
+
+.bento-menu__card:hover img {
+  transform: scale(1.04);
+}
+
+.bento-menu__card-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(17, 18, 20, 0.08) 10%, rgba(17, 18, 20, 0.84) 100%);
+}
+
+.bento-menu__card-content {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bento-menu__card-tag {
+  color: var(--sorot-ice);
+}
+
+.bento-menu__card-title {
+  font-size: 26px;
+  color: var(--sorot-white);
+}
+
+@media (max-width: 960px) {
+  .bento-menu__nav,
+  .bento-menu__spotlights {
+    grid-column: span 12;
+  }
+}
+
+@media (max-width: 680px) {
+  .adaptive-header {
+    padding: 14px 16px;
+  }
+
+  .adaptive-header__inner {
+    grid-template-columns: 1fr auto;
+  }
+
+  .adaptive-header__cta-pill {
+    display: none;
+  }
+
+  .adaptive-header__menu-pill {
+    justify-self: end;
+    height: 42px;
+    padding: 0 18px;
+  }
+
+  .adaptive-header__brand {
+    padding: 6px 12px;
+  }
+
+  .adaptive-header__brand-mark {
+    font-size: 26px;
+  }
+
+  .bento-menu__cards {
+    grid-template-columns: 1fr;
+  }
+
+  .bento-menu__card--lead {
+    grid-column: span 1;
+  }
+}
