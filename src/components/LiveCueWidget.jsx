@@ -31,7 +31,15 @@ export default function LiveCueWidget({ activeCueId, onSelectCue, onOpenBrief })
       if (heroEl) {
         const hr = heroEl.getBoundingClientRect();
         const prog = -hr.top / Math.max(1, hr.height - vh);
-        if (hr.bottom > vh * 0.4 && prog < 0.36 && activeCue.polarity !== 'light') {
+        if (hr.bottom > vh * 0.4 && prog < 0.82 && activeCue.polarity !== 'light') {
+          dark = true;
+        }
+      }
+      const vrEl = document.getElementById('vr-portal');
+      if (vrEl) {
+        const vr = vrEl.getBoundingClientRect();
+        const vp = -vr.top / Math.max(1, vr.height - vh);
+        if (vr.top < vh * 0.5 && vr.bottom > vh * 0.5 && vp > 0.22 && vp < 0.88) {
           dark = true;
         }
       }

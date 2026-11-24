@@ -68,8 +68,20 @@ export default function App() {
         const hr = heroEl.getBoundingClientRect();
         if (hr.bottom > 80) {
           const heroProg = Math.max(0, -hr.top / Math.max(1, hr.height - vh));
-          setHeaderPolarity(heroProg > 0.48 ? 'light' : activeCue.polarity);
+          setHeaderPolarity(heroProg > 0.84 ? 'light' : activeCue.polarity);
           return;
+        }
+      }
+
+      const vrEl = document.getElementById('vr-portal');
+      if (vrEl) {
+        const vr = vrEl.getBoundingClientRect();
+        if (vr.top <= 64 && vr.bottom >= 64) {
+          const vp = Math.max(0, -vr.top / Math.max(1, vr.height - vh));
+          if (vp > 0.22 && vp < 0.97) {
+            setHeaderPolarity('dark');
+            return;
+          }
         }
       }
 

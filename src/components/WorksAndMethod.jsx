@@ -8,12 +8,22 @@ export default function WorksAndMethod({ lang = 'en', onOpenBrief }) {
 
   const taglineTrackRef = useRef(null);
   const taglineWordsRef = useRef([]);
+  const taglineSubRef = useRef(null);
+  const taglineExitArchRef = useRef(null);
+
   const worksGridRef = useRef(null);
+
+  const methodLeadRef = useRef(null);
+  const methodWordsRef = useRef([]);
+
   const skillsTrackRef = useRef(null);
-  const skillItemsRef = useRef([]);
+  const skillsEntryArchRef = useRef(null);
+  const skillsExitArchRef = useRef(null);
+  const skillSlidesRef = useRef([]);
 
   const copy = UI_COPY[lang] || UI_COPY.en;
   const taglineWords = useMemo(() => copy.taglineTitle.split(' '), [copy.taglineTitle]);
+  const methodWords = useMemo(() => copy.methodTitle.split(' '), [copy.methodTitle]);
 
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -22,45 +32,95 @@ export default function WorksAndMethod({ lang = 'en', onOpenBrief }) {
     const updateScrollBeats = () => {
       const vh = window.innerHeight || 900;
 
-      // Act 2: Word-by-word opacity scrub inside Warm Amber Sticker Track
-      if (taglineTrackRef.current && taglineWordsRef.current.length > 0) {
+      // ACT 2: Full-Screen 100vw x 100vh Pinned Amber Manifesto (440vh long!) + Curved White Exit Arch into Productions!
+      if (taglineTrackRef.current) {
         const rect = taglineTrackRef.current.getBoundingClientRect();
-        const total = Math.max(1, rect.height - vh * 0.65);
-        const p = reduced ? 1 : Math.max(0, Math.min(1, (vh * 0.35 - rect.top) / total));
-        const count = taglineWordsRef.current.length;
+        const scrollable = Math.max(1, rect.height - vh);
+        const p = reduced ? 0.7 : Math.max(0, Math.min(1, -rect.top / scrollable));
 
+        const count = taglineWordsRef.current.length;
+        const scrubP = Math.max(0, Math.min(1, (p - 0.04) / 0.56));
         taglineWordsRef.current.forEach((span, idx) => {
           if (!span) return;
-          const threshold = idx / count;
-          const wordAlpha = reduced
+          const threshold = idx / Math.max(1, count);
+          const alpha = reduced
             ? 1
-            : Math.max(0.24, Math.min(1, (p - threshold * 0.78) * 6.5 + 0.24));
-          span.style.opacity = wordAlpha.toFixed(2);
+            : Math.max(0.22, Math.min(1, (scrubP - threshold * 0.84) * 7.0 + 0.22));
+          span.style.opacity = alpha.toFixed(2);
         });
+
+        if (taglineSubRef.current) {
+          const subP = reduced ? 1 : Math.max(0, Math.min(1, (p - 0.46) / 0.20));
+          taglineSubRef.current.style.opacity = subP.toFixed(2);
+          taglineSubRef.current.style.transform = `translate3d(0, ${((1 - subP) * 26).toFixed(1)}px, 0)`;
+        }
+
+        if (taglineExitArchRef.current && !reduced) {
+          const archP = Math.max(0, Math.min(1, (p - 0.80) / 0.19));
+          taglineExitArchRef.current.style.transform = `translate3d(0, ${((1 - archP) * 108).toFixed(2)}%, 0)`;
+        }
       }
 
-      // Act 3: Subtle odd/even column parallax on 2x4 Works Grid
+      // ACT 3: Odd/even column parallax on 2x4 Works Grid
       if (worksGridRef.current && window.innerWidth > 768 && !reduced) {
         const rect = worksGridRef.current.getBoundingClientRect();
         const norm = (vh * 0.5 - rect.top) / Math.max(1, rect.height);
-        const shift = Math.max(-28, Math.min(28, norm * 34 - 14));
+        const shift = Math.max(-32, Math.min(32, norm * 38 - 16));
         worksGridRef.current.style.setProperty('--col-parallax', `${shift.toFixed(1)}px`);
       }
 
-      // Act 5: Staggered reveal inside Dichroic Ice-Cyan Skills Sticker Track
-      if (skillsTrackRef.current && skillItemsRef.current.length > 0) {
-        const rect = skillsTrackRef.current.getBoundingClientRect();
-        const total = Math.max(1, rect.height - vh * 0.7);
-        const p = reduced ? 1 : Math.max(0, Math.min(1, (vh * 0.45 - rect.top) / total));
-
-        skillItemsRef.current.forEach((el, idx) => {
-          if (!el) return;
-          const start = idx * 0.26;
-          const itemP = reduced ? 1 : Math.max(0, Math.min(1, (p - start) / 0.38));
-          const y = (1 - itemP) * 34;
-          el.style.opacity = (0.22 + itemP * 0.78).toFixed(2);
-          el.style.transform = `translate3d(0, ${y.toFixed(1)}px, 0)`;
+      // ACT 4: Word-by-word scrub on left-aligned Method Lead (Video 00:01!)
+      if (methodLeadRef.current && methodWordsRef.current.length > 0) {
+        const rect = methodLeadRef.current.getBoundingClientRect();
+        const p = reduced ? 1 : Math.max(0, Math.min(1, (vh * 0.82 - rect.top) / (vh * 0.55)));
+        const count = methodWordsRef.current.length;
+        methodWordsRef.current.forEach((span, idx) => {
+          if (!span) return;
+          const threshold = idx / Math.max(1, count);
+          const alpha = reduced
+            ? 1
+            : Math.max(0.22, Math.min(1, (p - threshold * 0.82) * 6.5 + 0.22));
+          span.style.opacity = alpha.toFixed(2);
         });
+      }
+
+      // ACT 5: Full-Screen 100vw x 100vh Pinned Cyan Stage (460vh!) with Curved Entry/Exit Arches & 3 Sequential Pinned Slides (Video 00:03 - 00:06!)
+      if (skillsTrackRef.current) {
+        const rect = skillsTrackRef.current.getBoundingClientRect();
+        const scrollable = Math.max(1, rect.height - vh);
+        const p = reduced ? 0.25 : Math.max(0, Math.min(1, -rect.top / scrollable));
+
+        if (skillsEntryArchRef.current && !reduced) {
+          const inArch = Math.max(0, Math.min(1, p / 0.14));
+          skillsEntryArchRef.current.style.transform = `translate3d(0, ${((1 - inArch) * 104).toFixed(2)}%, 0)`;
+        }
+
+        const ranges = [
+          [0.12, 0.38],
+          [0.39, 0.65],
+          [0.66, 0.88],
+        ];
+        skillSlidesRef.current.forEach((el, idx) => {
+          if (!el) return;
+          if (reduced) {
+            el.style.opacity = idx === 0 ? '1' : '0';
+            el.style.pointerEvents = idx === 0 ? 'auto' : 'none';
+            return;
+          }
+          const [s, e] = ranges[idx];
+          const enter = Math.max(0, Math.min(1, (p - s) / 0.07));
+          const exit = idx === 2 ? Math.max(0, Math.min(1, (p - 0.84) / 0.06)) : Math.max(0, Math.min(1, (p - (e - 0.06)) / 0.06));
+          const alpha = enter * (1 - exit);
+          const y = (1 - enter) * 32 - exit * 28;
+          el.style.opacity = alpha.toFixed(3);
+          el.style.transform = `translate3d(0, ${y.toFixed(1)}px, 0)`;
+          el.style.pointerEvents = alpha > 0.5 ? 'auto' : 'none';
+        });
+
+        if (skillsExitArchRef.current && !reduced) {
+          const outArch = Math.max(0, Math.min(1, (p - 0.86) / 0.13));
+          skillsExitArchRef.current.style.transform = `translate3d(0, ${((1 - outArch) * 108).toFixed(2)}%, 0)`;
+        }
       }
     };
 
@@ -77,35 +137,42 @@ export default function WorksAndMethod({ lang = 'en', onOpenBrief }) {
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onScroll);
     };
-  }, [taglineWords]);
+  }, [taglineWords, methodWords]);
 
   return (
     <div className="chapter-solid-light section-light" data-chapter-polarity="light">
-      {/* ACT 2: PINNED WARM AMBER CHROMATIC STICKER MANIFESTO (s02-tagline.jpg twin!) */}
-      <section id="tagline" ref={taglineTrackRef} className="sticker-track sticker-track--amber">
-        <div className="sticker-sticky">
-          <div className="sticker-card sticker-card--amber">
-            <div className="sticker-card__inner">
-              <h2 className="tagline-scrub-heading">
-                {taglineWords.map((word, idx) => (
-                  <span
-                    key={`${word}-${idx}`}
-                    ref={(el) => {
-                      taglineWordsRef.current[idx] = el;
-                    }}
-                    className="tagline-scrub-word"
-                  >
-                    {word}{' '}
-                  </span>
-                ))}
-              </h2>
-              <p className="tagline-subcopy">{copy.taglineBody}</p>
-            </div>
+      {/* ACT 2: FULL-SCREEN 100VW X 100VH PINNED AMBER MANIFESTO CHAPTER (440vh!) */}
+      <section id="tagline" ref={taglineTrackRef} className="fullscreen-amber-track">
+        <div className="fullscreen-amber-sticky">
+          <div className="container fullscreen-amber__inner">
+            <h2 className="tagline-scrub-heading">
+              {taglineWords.map((word, idx) => (
+                <span
+                  key={`${word}-${idx}`}
+                  ref={(el) => {
+                    taglineWordsRef.current[idx] = el;
+                  }}
+                  className="tagline-scrub-word"
+                >
+                  {word}{' '}
+                </span>
+              ))}
+            </h2>
+            <p ref={taglineSubRef} className="tagline-subcopy">
+              {copy.taglineBody}
+            </p>
           </div>
+
+          {/* Rising Full-Screen White Studio Paper Arch unveiling Productions! */}
+          <div
+            ref={taglineExitArchRef}
+            className="chapter-arch-wipe chapter-arch-wipe--paper"
+            aria-hidden="true"
+          />
         </div>
       </section>
 
-      {/* ACT 3: PANORAMIC 2x4 SQUARE-ISH STAGE WORKS GRID (s03-works.jpg & s04-works-cards.jpg twin!) */}
+      {/* ACT 3: PANORAMIC 2x4 SQUARE-ISH STAGE WORKS GRID */}
       <section id="works" className="works-section">
         <div className="container works-container">
           <div className="works-header">
@@ -153,7 +220,7 @@ export default function WorksAndMethod({ lang = 'en', onOpenBrief }) {
         </div>
       </section>
 
-      {/* ACT 4: GIANT 144PX VERMILION MARQUEE + CENTERED EDITORIAL METHOD & 4 CHECKMARKS (s05-method.jpg twin!) */}
+      {/* ACT 4: GIANT 144PX VERMILION MARQUEE + ASYMMETRIC LEFT/RIGHT EDITORIAL METHOD (Video 00:01 - 00:02!) */}
       <section id="method" className="method-section">
         <div className="marquee-band">
           <div
@@ -192,58 +259,98 @@ export default function WorksAndMethod({ lang = 'en', onOpenBrief }) {
           </div>
         </div>
 
-        <div className="container method-editorial">
-          <p className="method-editorial__lead">{copy.methodTitle}</p>
-          <p className="method-editorial__body">{copy.methodBody}</p>
-
-          <ul className="method-editorial__checks">
-            {copy.methodChecks.map((line) => (
-              <li key={line}>
-                <span className="method-check-badge" aria-hidden="true">
-                  <Check size={11} strokeWidth={3} />
-                </span>
-                <span>{line}</span>
-              </li>
+        <div className="container method-asymmetric">
+          <p ref={methodLeadRef} className="method-editorial__lead">
+            {methodWords.map((word, idx) => (
+              <span
+                key={`${word}-${idx}`}
+                ref={(el) => {
+                  methodWordsRef.current[idx] = el;
+                }}
+                className="tagline-scrub-word"
+              >
+                {word}{' '}
+              </span>
             ))}
-          </ul>
-        </div>
-      </section>
+          </p>
 
-      {/* ACT 5: PINNED DICHROIC ICE-CYAN STICKER - 3 STAGGERED PROOF STATEMENTS (s06-skills.jpg twin!) */}
-      <section id="skills" ref={skillsTrackRef} className="sticker-track sticker-track--cyan">
-        <div className="sticker-sticky">
-          <div className="sticker-card sticker-card--cyan">
-            <ul className="skills-list">
-              {copy.skills.map((item, idx) => (
-                <li
-                  key={item.text}
-                  ref={(el) => {
-                    skillItemsRef.current[idx] = el;
-                  }}
-                  className={`skills-item skills-item--${item.align}`}
-                >
-                  <h3 className="skills-item__title">{item.text}</h3>
+          <div className="method-editorial__right-col">
+            <p className="method-editorial__body">{copy.methodBody}</p>
 
-                  {item.chips ? (
-                    <div className="skills-item__chips" aria-hidden="true">
-                      {item.chips.map((chip) => (
-                        <span key={chip} className="skills-chip mono-meta">
-                          {chip}
-                        </span>
-                      ))}
-                    </div>
-                  ) : (
-                    <a href="#works" className="split-pill split-pill--tonal-cyan">
-                      <span className="split-pill__icon" aria-hidden="true">
-                        <ChevronRight size={18} strokeWidth={2.3} />
-                      </span>
-                      <span className="split-pill__label">{item.cta}</span>
-                    </a>
-                  )}
+            <ul className="method-editorial__checks">
+              {copy.methodChecks.map((line) => (
+                <li key={line}>
+                  <span className="method-check-badge" aria-hidden="true">
+                    <Check size={11} strokeWidth={3} />
+                  </span>
+                  <span>{line}</span>
                 </li>
               ))}
             </ul>
           </div>
+        </div>
+      </section>
+
+      {/* ACT 5: FULL-SCREEN 100VW X 100VH PINNED CYAN CHAPTER + 3D PINWHEEL + 3 SEQUENTIAL SLIDES (Video 00:03 - 00:06!) */}
+      <section id="skills" ref={skillsTrackRef} className="fullscreen-cyan-track">
+        <div className="fullscreen-cyan-sticky">
+          {/* Rising Full-Screen Curved Cyan Arch Entry */}
+          <div
+            ref={skillsEntryArchRef}
+            className="chapter-arch-wipe chapter-arch-wipe--cyan"
+            aria-hidden="true"
+          >
+            <div className="container fullscreen-cyan__grid">
+              {/* Left 50% reserved for WebGL 3D 4-Blade Cyan Pinwheel Rosette! */}
+              <div className="fullscreen-cyan__pinwheel-spacer" aria-hidden="true" />
+
+              {/* Right 50%: 3 Sequentially Crossfading Proof Statements in the exact same pinned slot! */}
+              <div className="fullscreen-cyan__slides">
+                {copy.skills.map((item, idx) => (
+                  <div
+                    key={item.text}
+                    ref={(el) => {
+                      skillSlidesRef.current[idx] = el;
+                    }}
+                    className="cyan-proof-slide"
+                  >
+                    <h3 className="skills-item__title">{item.text}</h3>
+
+                    {item.chips ? (
+                      <div className="skills-item__chips" aria-hidden="true">
+                        <span className="skills-cert-tile">
+                          <strong>TUV</strong>
+                          <small>BGV-C1:2026</small>
+                        </span>
+                        <span className="skills-cert-tile">
+                          <strong>MA3</strong>
+                          <small>{item.chips[0]}</small>
+                        </span>
+                        <span className="skills-cert-tile">
+                          <strong>5.0 ★</strong>
+                          <small>{item.chips[2]}</small>
+                        </span>
+                      </div>
+                    ) : (
+                      <a href="#works" className="split-pill split-pill--tonal-cyan">
+                        <span className="split-pill__icon" aria-hidden="true">
+                          <ChevronRight size={18} strokeWidth={2.3} />
+                        </span>
+                        <span className="split-pill__label">{item.cta}</span>
+                      </a>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Rising Full-Screen White Studio Paper Exit Arch (Video 00:06!) */}
+          <div
+            ref={skillsExitArchRef}
+            className="chapter-arch-wipe chapter-arch-wipe--paper-top"
+            aria-hidden="true"
+          />
         </div>
       </section>
 
